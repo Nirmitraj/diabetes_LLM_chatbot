@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>iConcern</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+
+  <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+
+  <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  
+  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  
+  <!-- Template Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+  
+</head>
+
+<body>
+
+  <!-- ======= Top Bar ======= -->
+
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+  
+      <a href="{{ url_for('main.index') }}" class="logo">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Logo">
+      </a>
+  
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="{{ url_for('main.index') }}">HOME</a></li>
+          <!-- <li><a class="nav-link scrollto" href="#services">About</a></li> -->
+  
+          {% if session.get('user_name') %}
+            <!-- Display user menu if logged in -->
+            <li class="dropdown user-menu">
+              <button class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <img src="{{ url_for('static', filename='images/user/user-xs-01.jpg') }}" 
+                     class="user-image rounded-circle" alt="User Image" />
+                <span class="d-none d-lg-inline-block">{{ session['user_name'] }}</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li><a class="dropdown-link-item" href="{{ url_for('main.user_profile') }}"><i class="mdi mdi-account-outline"></i> My Profile</a></li>
+                <li><a class="dropdown-link-item" href="email-inbox.html"><i class="mdi mdi-email-outline"></i> Message <span class="badge badge-pill badge-primary">24</span></a></li>
+                <li><a class="dropdown-link-item" href="{{ url_for('main.user_activities') }}"><i class="mdi mdi-diamond-stone"></i> Activities</a></li>
+                <li><a class="dropdown-link-item" href="{{ url_for('main.user_account_settings') }}"><i class="mdi mdi-settings"></i> Account Setting</a></li>
+                <li class="dropdown-footer"><a class="dropdown-link-item" href="{{ url_for('main.logout') }}"><i class="mdi mdi-logout"></i> Log Out</a></li>
+              </ul>
+            </li>
+          {% else %}
+            <!-- Show login/register buttons if not logged in -->
+            <li class="lbuttons"><a class="nav-link scrollto btn-primary" href="{{ url_for('main.login') }}">LOGIN</a></li>
+            <li class="lbuttons"><a class="nav-link scrollto btn-primary" href="{{ url_for('main.register') }}">REGISTER</a></li>
+          {% endif %}
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+    </div>
+  </header><!-- End Header -->
+  <div class="nb-border"></div>
+  <main id="main">
+
+
+
+    <!-- ======= Contact Section ======= -->
+    <section id="register-here" class="contact">
+      <div class="container" data-aos="fade-up">
+       <div class="" data-aos="fade-up" data-aos-delay="100">
+
+       
+
+    <div class="row myrow d-flex justify-content-center">
+        <div class="col-xl-4 col-lg-4 col-md-8 col-sm-12 text-center">
+           
+            <div class="logincard">
+                  <h2 class="pt-4">Log in</h2>
+            <p class="">
+              Welcome back, Login in to continue
+            </p>
+            <div class="myline"></div>
+
+                <form class="form-card mine" onsubmit="login(event)">
+                    <!-- <div class="row justify-content-between text-left"> -->
+            <div class="form-group col-sm-12 flex-column d-flex">
+             <label class="form-control-label">Account</label>
+              <input type="text" id="login_email" name="login_email" placeholder="Email" onblur="validate(1)"> </div>
+               <div class="form-group col-sm-12 flex-column d-flex">
+             <input type="password" id="login_password" name="login_password" placeholder="Password" onblur="validate(2)">
+            </div>
+
+             <div class="myline"></div>
+              <div class="row mt-4">
+                <div class="col form-group-mine">
+                 <div class="form-group"> 
+                   <a href="" style="font-size : 10px;">Forgot Password</a>
+         
+                </div>
+                </div>
+                <div class="col form-group-mine">
+                    <button type="submit" class="btn-block btn-primary btn-get-started mt-4">Submit</button> 
+                </div>
+              </div>
+              <div id="login-error" style="color: red; margin-top: 10px;"></div>
+                </form>
+            </div>
+        </div>
+
+         <div class="col-lg-8 col-md-8 col-sm-12">
+            <div class="loginlady">
+              
+            </div>
+          </div>
+
+    </div>
+          </div>
+
+
+         
+        </div>
+
+      </div>
+    </section>
+
+  
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 footer-contact">
+            <h3>iConcern</h3>
+            <p>
+              Boston, MA 00000<br>
+              United States <br><br>
+              <strong>Phone:</strong> +1 785 317 1715<br>
+              <strong>Email:</strong> help@iConcern.org<br>
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Our Services</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Lorem ipsum dolor</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Lorem ipsum dolor sit amet</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Our Social Networks</h4>
+            <p>Cras fermentum odio eu feugiat lide par naso tierra videa magna derita valies</p>
+            <div class="social-links mt-3">
+              <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+              <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+              <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+              <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+              <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+ 
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+ 
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+ 
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+ 
+  <script src="{{ url_for('static', filename='assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+  
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}">
+
+  </script>
+<script>
+  async function login(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('login_email').value;
+    const password = document.getElementById('login_password').value;
+
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.redirect_url;
+      } else {
+        const data = await response.json();
+        document.getElementById('login-error').innerText = data.message;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      document.getElementById('login-error').innerText = 'An error occurred. Please try again later.';
+    }
+  }
+</script>
+
+
+</body>
+
+</html>

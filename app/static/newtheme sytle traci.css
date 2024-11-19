@@ -1,0 +1,113 @@
+/* Target all menu items within the specific container */
+.wp-block-navigation__responsive-container-content .menu-item a {
+    color: #000; /* Default text color */
+    background-color: transparent; /* Default background color */
+    padding: 10px 15px; /* Add some padding for better aesthetics */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+/* Add hover effect */
+.wp-block-navigation__responsive-container-content .menu-item a:hover {
+    background-color: #FEA77A; /* Change background color on hover */
+    color: #333; /* Change text color on hover */
+}
+
+/* Event page */
+.wp-block-coblocks-front-events-swiper-container {
+    overflow: hidden;
+    background-color: #e4dfdf91;
+    padding: 20px;
+}
+
+
+.wp-block-template-part {    background-color: #ffe4c452;}
+
+.is-layout-constrained > :last-child {
+    margin-block-end: 0;
+    display: hidden;
+}
+
+
+
+/* button */
+.wp-block-button__link {
+    background-color: var(--wp--preset--color--theme-3);
+    border-radius: 0;
+    border-width: 0;
+    color: var(--wp--preset--color--theme-1);
+    font-size: var(--wp--preset--font-size--small);
+    font-weight: 450;
+    line-height: inherit;
+    padding-top: 14px;
+    padding-right: 22px;
+    padding-bottom: 14px;
+    padding-left: 22px;
+    text-decoration: none;
+    transition: background-color 0.9s ease, color 0.9s ease; /* Smooth transition */
+}
+
+.wp-block-button__link:hover {
+    background-color: var(--wp--preset--color--theme-2); /* Change to your desired hover background color */
+    color: var(--wp--preset--color--theme-4); /* Change to your desired hover text color */
+}
+
+
+/* footer style */
+/* Footer Container */
+.site-footer-container.wp-block-template-part {
+    background-color: #0e0e0e; /* Dark background color */
+    color: #ffffff; /* White text color */
+    padding: 40px 20px; /* Padding for top/bottom and left/right */
+    text-align: center; /* Center-align text */
+}
+
+/* Footer Links */
+.site-footer-container.wp-block-template-part a {
+    color: #ffcc00; /* Link color */
+    text-decoration: none; /* Remove underline */
+}
+
+.site-footer-container.wp-block-template-part a:hover {
+    color: #ffffff; /* Hover color */
+}
+
+/* Footer Social Icons */
+.site-footer-container.wp-block-template-part .social-icons {
+    margin-top: 20px; /* Spacing above social icons */
+}
+
+.site-footer-container.wp-block-template-part .social-icons a {
+    display: inline-block;
+    margin: 0 10px; /* Spacing between icons */
+    color: #ffcc00; /* Icon color */
+    font-size: 24px; /* Icon size */
+}
+
+.site-footer-container.wp-block-template-part .social-icons a:hover {
+    color: #ffffff; /* Hover color */
+}
+
+/* Footer Copyright Text */
+.site-footer-container.wp-block-template-part .footer-copyright {
+    margin-top: 20px; /* Spacing above copyright text */
+    font-size: 14px; /* Smaller font size */
+    color: #aaaaaa; /* Grey color */
+}
+
+/* Footer Navigation */
+.site-footer-container.wp-block-template-part .footer-nav {
+    margin-top: 20px; /* Spacing above navigation links */
+    font-size: 16px; /* Font size */
+}
+
+.site-footer-container.wp-block-template-part .footer-nav a {
+    margin: 0 10px; /* Spacing between navigation links */
+    color: #ffcc00; /* Link color */
+}
+
+.site-footer-container.wp-block-template-part .footer-nav a:hover {
+    color: #ffffff; /* Hover color */
+
+}
+
+/* hi*/

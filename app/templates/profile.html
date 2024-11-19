@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>iConcern</title> 
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  
+  <style>
+    /*
+*
+* ==========================================
+* CUSTOM UTIL CLASSES
+* ==========================================
+*
+*/
+
+/* Rounded tabs */
+
+@media (min-width: 576px) {
+  .rounded-nav {
+    border-radius: 50rem !important;
+  }
+}
+
+@media (min-width: 576px) {
+  .rounded-nav .nav-link {
+    border-radius: 50rem !important;
+  }
+}
+
+/* With arrow tabs */
+
+.with-arrow .nav-link.active {
+  position: relative;
+}
+
+.with-arrow .nav-link.active::after {
+  content: '';
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #2b90d9;
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+}
+
+/* lined tabs */
+
+.lined .nav-link {
+  border: none;
+  border-bottom: 3px solid transparent;
+}
+
+.lined .nav-link:hover {
+  border: none;
+  border-bottom: 3px solid transparent;
+}
+
+.lined .nav-link.active {
+  background: none;
+  color: #555;
+  border-color: #2b90d9;
+}
+
+/*
+*
+* ==========================================
+* FOR DEMO PURPOSE
+* ==========================================
+*
+*/
+
+body {
+  background: #304352;
+  background: -webkit-linear-gradient(to right, #304352, #d7d2cc);
+  background: linear-gradient(to right, #304352, #d7d2cc);
+  min-height: 100vh;
+}
+
+.nav-pills .nav-link {
+  color: #555;
+}
+.text-uppercase {
+  letter-spacing: 0.1em;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ======= Top Bar ======= -->
+
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="d-flex align-items-center">
+    <div class="container d-flex align-items-center justify-content-between">
+
+      <h1 class="logo"><a href="index.html">iConcern</a></h1>
+      <!-- Uncomment below if you prefer to use an image logo -->
+      <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+          <li><a class="nav-link scrollto" href="#about">About Us</a></li>
+          <li><a class="nav-link scrollto" href="#services">Services</a></li>
+          <li><a class="nav-link scrollto" href="#team">Team</a></li>
+          <li><a class="nav-link scrollto" href="#contact">Contact Us</a></li>
+
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+  <div class="d-flex register-buttons">
+    <li class="register"><a href="login.html" id="" class="btn-get-started btn-get-started-login scrollto">Login</a></li>
+    <li class="register"><a href="register.html" class="btn-get-started scrollto">Register</a></li>
+    </div>
+  </div>
+  </header><!-- End Header -->
+  <div class="nb-border"></div>
+  <main id="main">
+
+
+
+    <!-- ======= Contact Section ======= -->
+    <section id="register-here" class="contact">
+  <div class="container">
+    <div id="update_message_container" class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong id="update_message">Hello Patient! Kindly Update your profile</strong> 
+      <button type="button" class="btn-close" onclick="dismissAlert()" aria-label="Close"></button>
+    </div>
+    <div class="main-body">
+
+
+    
+          <div class="row">
+            <div class="col-md-12">
+              <div class="container py-5">
+             <div class="x bg-white rounded shadow mb-5">
+                  <!-- Bordered tabs-->
+                  <ul id="myTab1" role="tablist" class="nav nav-tabs nav-pills with-arrow flex-column flex-sm-row text-center">
+                    <li class="nav-item flex-sm-fill">
+                      <a id="Personal1-tab" data-toggle="tab" href="#Personal1" role="tab" aria-controls="Personal1" aria-selected="true" class="nav-link text-uppercase font-weight-bold mr-sm-3 rounded-0 border active">Personal Information</a>
+                    </li>
+                    <li class="nav-item flex-sm-fill">
+                      <a id="Medical1-tab" data-toggle="tab" href="#Medical1" role="tab" aria-controls="profile1" aria-selected="false" class="nav-link text-uppercase font-weight-bold mr-sm-3 rounded-0 border">Medical Information</a>
+                    </li>
+                    <li class="nav-item flex-sm-fill">
+                      <a id="contact1-tab" data-toggle="tab" href="#contact1" role="tab" aria-controls="contact1" aria-selected="false" class="nav-link text-uppercase font-weight-bold rounded-0 border">Life Style Information</a>
+                    </li>
+                    <li class="nav-item flex-sm-fill">
+                      <a id="contact1-tab" data-toggle="tab" href="#goal1" role="tab" aria-controls="goal1" aria-selected="false" class="nav-link text-uppercase font-weight-bold rounded-0 border">Goals and Preferences</a>
+                    </li>
+                  </ul>
+                  <div id="myTab1Content" class="tab-content">
+                    <div id="Personal1" role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade px-4 py-5 show active">
+                      <h4 class="leade font-italic mb-2">Personal Information</h4>
+                    
+                      <form class="form-card" onsubmit="event.preventDefault()">
+                          <div class="row justify-content-between text-left">
+                              <div class="form-group col-sm-6 flex-column d-flex">
+                               <label class="form-control-label px-3">Full name<span class="text-danger"> *</span></label> <input type="text" id="profile_fullname" name="profile_fullname" placeholder="" onblur=""> </div>
+                          </div>
+                         
+                           <div class="row justify-content-between text-left">
+                              <div class="form-group-mine col-sm-6 flex-column d-flex">
+                               <label class="form-control-label px-3">Sex<span class="text-danger"> *</span></label> 
+                               <select class="form-select" id="profile_sex" aria-label="Default select example">
+                                <option value="0" selected>--</option>
+                                <option value="1">Male</option>
+                                <option value="2">Female</option>
+                                <option value="3">Other</option>
+                              </select>
+                              </div>
+                              <div class="form-group-mine col-sm-6 flex-column d-flex"> 
+                                <label class="form-control-label px-3">Age<span class="text-danger"> *</span></label> 
+                                  <input type="text" id="profile_age" name="profile_age" placeholder="" onblur="">
+                               </div>
+                          </div>
+                       
+                    </form>
+             
+                    </div>
+                    <div id="Medical1" role="tabpanel" aria-labelledby="Medical1-tab" class="tab-pane fade px-4 py-5">
+                      <h4 class="leade font-italic  mb-2">Medical Information</h4>
+                     
+                      <form class="form-card" onsubmit="event.preventDefault()">
+                          <div class="row justify-content-between text-left">
+                              <div class="form-group col-sm-6 flex-column d-flex">
+                                <div class="form-group col-sm-6 flex-column d-flex"> 
+                                  <label class="form-control-label px-3">Diagnosis Date:<span class="text-danger"> *</span></label> <input type="date" id="profile_diagnose_date" name="lname"  onblur="validate(2)"> </div>
+                          </div>
+                          <div class="form-group-mine col-sm-6 flex-column d-flex"> 
+                            <label class="form-control-label px-3">Blood Glucose Levels:<span class="text-danger"> *</span></label> 
+                              <input type="text" id="profile_glucose_level" name="fname" placeholder="" onblur="validate(1)">
+                           </div>
+                         
+                           <div class="row justify-content-between text-left">
+                              <div class="form-group-mine col-sm-6 flex-column d-flex">
+                               <label class="form-control-label px-3">Other Medical Conditions:<span class="text-danger"> *</span></label> 
+                                <textarea class="form-control-label" id="profile_other_medical_conditions"></textarea>
+                              <!-- </select> -->
+                              </div>
+                           </div>
+                        </div>
+                    </form>
+                    </div>
+                    <div id="contact1" role="tabpanel" aria-labelledby="contact-tab" class="tab-pane fade px-4 py-5">
+                      <h4 class="leade font-italic mb-2">Life Style Information</h4>
+                       <form class="form-card" onsubmit="event.preventDefault()">
+                            <div class="row justify-content-between text-left">
+                               <div class="form-group-mine col-sm-6 flex-column d-flex">
+                                <label class="form-control-label px-3">Dietary Preferences<span class="text-danger"> *</span></label> 
+                                <select class="form-select" aria-label="Default select example" id="profile_diet">
+                                 <option value="0" selected>--</option>
+                                 <option value="1">Vegetarian</option>
+                                 <option value="2">Vegan</option>
+                                 <option value="3">GlutenFree</option>
+                                 <option value="4">Kosher</option>
+                                 <option value="5">Halal</option>
+                               </select>
+                               </div>
+                               <div class="form-group-mine col-sm-6 flex-column d-flex"> 
+                                 <label class="form-control-label px-3">Height<span class="text-danger"> *</span></label> 
+                                   <input type="text" id="profile_height" name="height" placeholder="" onblur="validate(1)">
+                                </div>
+                           </div>
+
+                             
+                           <div class="row justify-content-between text-left">
+                            <div class="form-group-mine col-sm-6 flex-column d-flex"> 
+                              <label class="form-control-label px-3">Physical activity level:<span class="text-danger"> *</span></label> 
+                                <input type="text" id="profile_physical_level" name="physical_level" placeholder="" onblur="validate(1)">
+                             </div>
+                            <div class="form-group-mine col-sm-6 flex-column d-flex"> 
+                              <label class="form-control-label px-3">Weight:<span class="text-danger"> *</span></label> 
+                                <input type="text" id="profile_weight" name="weight" placeholder="" onblur="validate(1)">
+                             </div>
+                        </div>
+                        
+                     </form>
+                    </div>
+                    <div id="goal1" role="tabpanel" aria-labelledby="goal-tab" class="tab-pane fade px-4 py-5">
+                      <h4 class="leade font-italic mb-0">Goals and Preferences</h4>
+                      
+                      <form class="form-card" onsubmit="event.preventDefault()">
+                        <div class="row justify-content-between text-left">
+                            <div class=" form-group form-group col-sm-6 flex-column d-flex">
+                              <label class="form-control-label px-3">Management Goals:<span class="text-danger"> *</span></label> 
+                              <textarea class="form-control-label" id="profile_management_goals" placeholder="Goals such as lowering blood sugar, losing weight etc."></textarea>
+                        </div>
+                        <div class="form-group-mine col-sm-6 flex-column d-flex"> 
+                          <label class="form-control-label px-3">Learning Preference:<span class="text-danger"> *</span></label> 
+                            <input type="text" id="profile_learning_preference" name="learning_preference" placeholder="" onblur="validate(1)">
+                         </div>
+                       
+                         
+                      </div>
+                  </form>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                    <div class="profile-button">
+                        <button type="submit" class="btn-block btn-primary btn-get-started " onclick="update_user_profile(event)">Submit</button> 
+                    </div>
+                    </div>
+                    </div>
+                  <!-- End bordered tabs -->
+                </div>
+              </div>
+              
+           
+            </div>
+          
+
+
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+
+    </section>
+
+  
+  </main>
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 footer-contact">
+            <h3>iConcern</h3>
+            <p>
+              Manhattan, KS 66502<br>
+              United States <br><br>
+              <strong>Phone:</strong> +1 785 317 1715<br>
+              <strong>Email:</strong> help@iConcern.org<br>
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Useful Links</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Team</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Contact Us</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Our Services</h4>
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Full Application Package</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="#">Academic Coaching</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 footer-links">
+            <h4>Our Social Networks</h4>
+            <p>Cras fermentum odio eu feugiat lide par naso tierra videa magna derita valies</p>
+            <div class="social-links mt-3">
+              <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+              <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+              <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+              <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+              <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="preloader"></div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>x
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js">
+    $('.file-upload').file_upload();
+  </script>
+  <script src="assets/js/profile.js"></script>
+
+</body>
+
+</html>
