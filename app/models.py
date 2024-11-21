@@ -32,3 +32,13 @@ class LoginHistory(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     user = db.relationship('User', backref=db.backref('login_history', lazy=True))
+    
+class ChatHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    title = db.Column(db.String(255), nullable=False)  # New field for chat titles
+    last_message = db.Column(db.Text, nullable=True)   # New field for the last message
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    role = db.Column(db.String(10))  # 'user' or 'assistant'
+    content = db.Column(db.Text)  # Chat content
+    user = db.relationship('User', backref=db.backref('chat_history', lazy=True))

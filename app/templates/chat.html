@@ -302,7 +302,7 @@
                             <div class="media media-sm bg-warning-10 p-4 mb-0">
                               <div class="media-sm-wrapper">
                                 <a href="{{ url_for('main.user_profile') }}">
-                                  <img src="{{ url_for('static', filename='images/user/chat.jpg') }}" alt="User Image">
+                                  <img src="{{ url_for('static', filename='images/user/user.jpg') }}" alt="User Image">
                                   
                                 </a>
                               </div>
@@ -592,7 +592,7 @@
       <form class="card-header px-0">
         <div class="input-group px-5">
           <!-- <a href=""><md-button class="md-fab md-mini mdi mdi-pencil-box-outline mdi-24px p-2"> </md-button></a> -->
-          <button type="" class="mb-1 btn btn-pill btn-success mb-2 btn-sm">New Chat</button>
+          <button type="button" id= "new-chat" class="mb-1 btn btn-pill btn-success mb-2 btn-sm">New Chat</button>
          
         </div>
         <div class="input-group px-5">
@@ -600,119 +600,8 @@
          
         </div>
       </form>
-
-      <ul class="card-body px-0" data-simplebar style="height: 630px;">
-      
-
-        
-        
-        <li class="mb-4 px-5 py-2">
-          <a href="javascript:void(0)" class="media media-message">
-            <div class="position-relative mr-3">
-              <img class="rounded-circle" src="{{ url_for('static', filename='images/user/bot.jpg') }}" alt="User Image">
-
-              <span class="status active"></span>
-            </div>
-            
-            <div class="media-body">
-              <div class="message-contents">
-                <span class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="username text-dark">Diabetes information</span>
-                  <div class="my-dropdown">
-                    <!-- Dropdown button -->
-                    <button class="my-dropdown-btn" id="my-dropdown-btn">
-                      <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" class="icon-md">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                          d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"
-                          fill="currentColor"></path>
-                      </svg>
-                    </button>
-                
-                    <!-- Dropdown content -->
-                    <div class="my-dropdown-content">
-                      <div class="my-dropdown-item">Delete Chat <span class="mdi mdi-delete" style="color: rgb(177, 42, 42);"></span></div>
-                      <div class="my-dropdown-item">Edit <span class="mdi mdi-square-edit-outline"></span></div>
-                    </div>
-                  </div>
-                </span> <p class="last-msg text-smoke">What is Diabetes</p></div>
-            </div>
-          </a>
-        </li>
-
-        <li class="mb-4 px-5 py-2">
-          <a href="javascript:void(0)" class="media media-message">
-            <div class="position-relative mr-3">
-              <img class="rounded-circle" src="{{ url_for('static', filename='images/user/bot.jpg') }}" alt="User Image">
-              
-              <span class="status away"></span>
-            </div>
-            
-            <div class="media-body">
-              <div class="message-contents">
-                <span class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="username text-dark">Popular Articles</span>
-                  <div class="my-dropdown">
-                    <!-- Dropdown button -->
-                    <button class="my-dropdown-btn" id="my-dropdown-btn">
-                      <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" class="icon-md">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                          d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"
-                          fill="currentColor"></path>
-                      </svg>
-                    </button>
-                
-                    <!-- Dropdown content -->
-                    <div class="my-dropdown-content">
-                      <div class="my-dropdown-item">Delete Chat <span class="mdi mdi-delete" style="color: rgb(177, 42, 42);"></span></div>
-                      <div class="my-dropdown-item">Edit <span class="mdi mdi-square-edit-outline"></span></div>
-                    </div>
-                  </div>
-                </span>
-                
-                <p class="last-msg text-smoke">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam itaque doloremque
-                  odio, eligendi delectus vitae.</p>
-              </div>
-            </div>
-          </a>
-        </li>
-
-        <li class="mb-4 px-5 py-2">
-          <a href="javascript:void(0)" class="media media-message">
-            <div class="position-relative mr-3">
-              <img class="rounded-circle" src="{{ url_for('static', filename='images/user/bot.jpg') }}" alt="User Image">
-              
-              <span class="status away"></span>
-            </div>
-            
-            <div class="media-body">
-              <div class="message-contents">
-                <span class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="username text-dark">Books about diabetes</span>
-                  <div class="my-dropdown">
-                    <!-- Dropdown button -->
-                    <button class="my-dropdown-btn" id="my-dropdown-btn">
-                      <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" class="icon-md">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                          d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"
-                          fill="currentColor"></path>
-                      </svg>
-                    </button>
-                
-                    <!-- Dropdown content -->
-                    <div class="my-dropdown-content">
-                      <div class="my-dropdown-item">Delete Chat <span class="mdi mdi-delete" style="color: rgb(177, 42, 42);"></span></div>
-                      <div class="my-dropdown-item">Edit <span class="mdi mdi-square-edit-outline"></span></div>
-                    </div>
-                  </div>
-                </span>
-                
-                <p class="last-msg text-smoke">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam itaque doloremque
-                  odio, eligendi delectus vitae.</p>
-              </div>
-            </div>
-          </a>
-        </li>
-
+      <ul class="card-body px-0" id="chat-history-container" data-simplebar style="height: 630px;">
+      <!-- space for chat history containers -->
       </ul>
     </div>
   </div>
@@ -726,92 +615,7 @@
         </div>
 
       <div class="card-body pb-0" data-simplebar style="height: 545px;">
-        <!-- Media Chat Left -->
-        <!-- <div class="media media-chat">
-          <img src="{{ url_for('static', filename='images/user/user.jpg') }}" class="rounded-circle" alt="Avata Image">
-          
-          <div class="media-body">
-            <div class="text-content">
-              <span class="message">Hello my name is anna.</span>
-              <time class="time">5 mins ago</time>
-            </div>
-          </div>
-        </div> -->
 
-        <!-- Media Chat Right -->
-        <!-- <div class="media media-chat media-chat-right">
-          <div class="media-body">
-            <div class="text-content">
-              <span class="message">Hello i am Riman.</span>
-              <time class="time">4 mins ago</time>
-            </div>
-
-            <div class="text-content">
-              <span class="message">I want to know about yourself</span>
-              <time class="time">3 mins ago</time>
-            </div>
-          </div>
-          <img src="{{ url_for('static', filename='images/user/user.jpg') }}" class="rounded-circle" alt="Avata Image">
-        </div> -->
-
-        <!-- Media Chat Left -->
-        <!-- <div class="media media-chat">
-          <img src="{{ url_for('static', filename='images/user/user.jpg') }}" class="rounded-circle" alt="Avata Image">
-          <div class="media-body">
-            <div class="text-content">
-              <span class="message">Its had resolving otherwise she contented therefore.</span>
-              <time class="time">1 mins ago</time>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- Media Chat Right -->
-        <!-- <div class="media media-chat media-chat-right">
-          <div class="media-body">
-            <div class="text-content">
-              <span class="message">Hello i am Riman.</span>
-              <time class="time">4 mins ago</time>
-            </div>
-
-            <div class="text-content">
-              <span class="message">I want to know about yourself</span>
-              <time class="time">3 mins ago</time>
-            </div>
-          </div>
-          <img src="{{ url_for('static', filename='images/user/bot.jpg') }}" class="rounded-circle" alt="Avata Image"> -->
-          
-        <!-- </div> -->
-
-        <!-- Media Chat Left
-        <div class="media media-chat">
-          <img src="{{ url_for('static', filename='images/user/user.jpg') }}" class="rounded-circle" alt="Avata Image">
-          
-          <div class="media-body">
-            <div class="text-content">
-              <span class="message">Its had resolving otherwise she contented therefore.</span>
-              <time class="time">1 mins ago</time>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- Media Chat Right
-        <div class="media media-chat media-chat-right">
-          <div class="media-body">
-            <div class="text-content">
-              <span class="message">Hello i am Riman.</span>
-              <time class="time">4 mins ago</time>
-            </div>
-
-            <div class="text-content">
-              <span class="message">I want to know about yourself</span>
-              <time class="time">3 mins ago</time>
-            </div>
-          </div>
-          <img src="{{ url_for('static', filename='images/user/bot.jpg') }}" class="rounded-circle" alt="Avata Image">
-          
-        </div>
-
-      </div> -->
       <div class="card-body pb-0" id="chat-container" data-simplebar style="height: 545px;">
         <!-- Existing messages will go here -->
       </div>
@@ -833,25 +637,106 @@
         
           <!-- Footer -->
           <footer class="footer mt-auto">
-            <!-- <div class="copyright bg-white">
-              <p>
-                &copy; <span id="copy-year"></span> Copyright Mono Dashboard Bootstrap Template by <a class="text-primary" href="http://www.iamabdus.com/" target="_blank" >Abdus</a>.
-              </p>
-            </div> -->
-            <script>
+
+            <!-- <script>
                 var d = new Date();
                 var year = d.getFullYear();
                 document.getElementById("copy-year").innerHTML = year;
-            </script>
+            </script> -->
 
             <script>
-    // Function to add a new message to the chat container
-    document.getElementById('send-button').addEventListener('click', function () {
+let chatHistory = [];
+let currentChatMessages = [];
+
+document.getElementById('new-chat').addEventListener('click', function() {
+  if (currentChatMessages.length > 0) {
+    // Add current chat messages to chat history
+    chatHistory.push([...currentChatMessages]); // Store a copy of current messages
+
+    // Update chat history UI
+    addChatHistCardToUI(chatHistory.length - 1);
+
+    // Clear current chat messages
+    currentChatMessages = [];
+  }
+
+  // Clear chat container for a new conversation
+  const chatContainer = document.getElementById('chat-container');
+  chatContainer.innerHTML = '';
+  event.preventDefault();
+});
+
+function addChatHistCardToUI(chatIndex, isUser = true) {
+  const chatHistContainer = document.getElementById('chat-history-container');
+  const newChatHist = document.createElement('li');
+  const lastMessagePreview = chatHistory[chatIndex][chatHistory[chatIndex].length - 1].content;
+
+  newChatHist.className = 'chat-history-item';
+
+  newChatHist.innerHTML = `
+    <div class="media media-message">
+      <div class="position-relative mr-3">
+        <img class="rounded-circle" src="{{ url_for('static', filename='images/user/bot.jpg') }}" alt="User Image">
+        <span class="status active"></span>
+      </div>
+      <div class="media-body">
+        <div class="message-contents">
+          <span class="d-flex justify-content-between align-items-center mb-1">
+            <button data-chat-id="${chatIndex}" class="username text-dark">Chat ${chatIndex + 1}</button>
+            <div class="my-dropdown">
+              <button class="my-dropdown-btn" data-chat-id="${chatIndex}">
+                <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" class="icon-md">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12ZM10 12C10 10.8954 10 12 12 12C13.1046 12 14 10.8954 14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 12 10 12ZM17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12Z"
+                    fill="currentColor"></path>
+                </svg>
+              </button>
+              <div class="my-dropdown-content">
+                <div class="my-dropdown-item">Delete Chat <span class="mdi mdi-delete" style="color: rgb(177, 42, 42);"></span></div>
+                <div class="my-dropdown-item">Edit <span class="mdi mdi-square-edit-outline"></span></div>
+              </div>
+            </div>
+          </span>
+          <p class="last-msg text-smoke">${lastMessagePreview}</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  console.log(`Adding chat history item for Chat ${chatIndex + 1} with data-chat-id=${chatIndex}`);
+
+  chatHistContainer.prepend(newChatHist);
+}
+
+// Use event delegation to handle clicks on all dropdown items
+document.getElementById('chat-history-container').addEventListener('click', function(event) {
+  console.log(event.target);
+  const target = event.target;
+
+  // Check if the clicked element is a dropdown item
+  if (target.classList.contains('my-dropdown-item')) {
+    const action = target.textContent.trim();
+    const chatId = target.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id');
+
+    if (action === 'Delete Chat') {
+      console.log(`Deleting chat ${chatId}`);
+      // delete functionality
+    } else if (action === 'Edit') {
+      console.log(`Editing chat ${chatId}`);
+      // edit functionality
+    }
+  }
+});
+
+
+// Function to add a new message to the chat container
+document.getElementById('send-button').addEventListener('click', function () {
   const messageInput = document.getElementById('user-message');
   const userMessage = messageInput.value.trim();
 
   if (userMessage) {
     addMessageToUI(userMessage, true); // Display user message immediately
+    currentChatMessages.push({ content: userMessage, isUser: true }); // Save message to current chat
     messageInput.value = ''; // Clear input
 
     // Send message to server (if needed for backend response)
@@ -863,40 +748,16 @@
       success: function (response) {
         if (response && response.response) {
           addMessageToUI(response.response, false); // Display bot response
+          currentChatMessages.push({ content: response.response, isUser: false }); // Save bot response to current chat
         }
       },
       error: function () {
         addMessageToUI('Error: Could not get response.', false);
+        currentChatMessages.push({ content: 'Error: Could not get response.', isUser: false }); // Save error to current chat
       }
     });
   }
 });
-
-// Function to append message to the UI
-function addMessageToUI(content, isUser = true) {
-  const chatContainer = document.getElementById('chat-container');
-  const messageDiv = document.createElement('div');
-  const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  messageDiv.className = isUser ? 'media media-chat media-chat-right' : 'media media-chat';
-  messageDiv.innerHTML = `
-    <div class="media-body">
-      <div class="text-content">
-        <span class="message">${content}</span>
-        <time class="time">${timestamp}</time>
-      </div>
-    </div>
-  `;
-
-  if (isUser) {
-    messageDiv.innerHTML += `<img src="{{ url_for('static', filename='images/user/user.jpg') }}" class="rounded-circle" alt="User Image">`;
-  } else {
-    messageDiv.innerHTML = `<img src="{{ url_for('static', filename='images/user/bot.jpg') }}" class="rounded-circle" alt="Bot Image">` + messageDiv.innerHTML;
-  }
-
-  chatContainer.appendChild(messageDiv);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
 
 // Function to append a message to the UI
 function addMessageToUI(content, isUser = true) {
@@ -924,6 +785,30 @@ function addMessageToUI(content, isUser = true) {
   chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
 }
 
+document.getElementById('chat-history-container').addEventListener('click', function(event) {
+  // Check if the clicked element is a button with the `username` class
+  if (event.target && event.target.classList.contains('username')) {
+    // Get the chat ID from the button's `data-chat-id` attribute
+    const chatId = event.target.getAttribute('data-chat-id');
+    
+    if (chatId !== null) {
+      console.log(`Event delegation: Loading chat history for Chat ${parseInt(chatId) + 1}`);
+      loadChatFromHistory(parseInt(chatId));
+    }
+  }
+});
+
+function loadChatFromHistory(chatIndex) {
+  console.log(`Loading chat history for Chat ${chatIndex + 1}`);
+  const chatContainer = document.getElementById('chat-container');
+  chatContainer.innerHTML = ''; // Clear current chat messages
+
+  // Load each message from the selected chat history
+  chatHistory[chatIndex].forEach((msg) => {
+    addMessageToUI(msg.content, msg.isUser);
+  });
+}
+
   </script>
           </footer>
 
@@ -941,104 +826,6 @@ function addMessageToUI(content, isUser = true) {
                         <div class="mb-4">
                           <input type="text" class="form-control form-control-lg form-control-secondary rounded-0" placeholder="Search contacts...">
                         </div>
-
-                        <!-- <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <img src="{{ url_for('static', filename='images/user/user.jpg') }}" alt="User Image">
-                              
-                              <span class="active bg-primary"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <span class="title">Selena Wagner</span>
-                              <span class="discribe">Designer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <img src="{{ url_for('static', filename='images/user/bot.jpg') }}" alt="User Image">
-                              
-                              <span class="active bg-primary"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <span class="title">Walter Reuter</span>
-                              <span>Developer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <img src="{{ url_for('static', filename='images/user/user-sm-03.jpg') }}" alt="User Image">
-                              
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <span class="title">Larissa Gebhardt</span>
-                              <span>Cyber Punk</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <img src="{{ url_for('static', filename='images/user/user-sm-04.jpg') }}" alt="User Image">
-                            </a>
-
-                          </div>
-                          <div class="media-body">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <span class="title">Albrecht Straub</span>
-                              <span>Photographer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <img src="{{ url_for('static', filename='images/user/user-sm-05.jpg') }}" alt="User Image">
-                              <span class="active bg-danger"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <span class="title">Leopold Ebert</span>
-                              <span>Fashion Designer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <img src="{{ url_for('static', filename='images/user/user-sm-06.jpg') }}" alt="User Image">
-                              <span class="active bg-primary"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="{{ url_for('main.user_profile') }}">
-                              <span class="title">Selena Wagner</span>
-                              <span>Photographer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div> -->
-
-
-
     
                     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
                     
