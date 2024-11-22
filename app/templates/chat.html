@@ -19,39 +19,39 @@
  <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
 
  <link href="{{ url_for('static', filename='plugins/material/css/materialdesignicons.min.css') }}" rel="stylesheet" />
- 
+
  <link href="{{ url_for('static', filename='plugins/simplebar/simplebar.css') }}" rel="stylesheet" />
 
 
  <!-- PLUGINS CSS STYLE -->
  <link href="{{ url_for('static', filename='plugins/nprogress/nprogress.css') }}" rel="stylesheet" />
 
- 
- 
- 
+
+
+
  <link href="{{ url_for('static', filename='plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css') }}" rel="stylesheet" />
- 
- 
- 
+
+
+
  <link href="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}" rel="stylesheet" />
- 
- 
- 
+
+
+
  <link href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet" />
- 
- 
- 
+
+
+
  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
- 
- 
- 
+
+
+
  <link href="{{ url_for('static', filename='plugins/toaster/toastr.min.css') }}" rel="stylesheet" />
- 
- 
+
+
  <!-- MONO CSS -->
  <link id="main-css-href" rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
- 
- 
+
+
 
 
  <!-- FAVICON -->
@@ -67,7 +67,7 @@
   <![endif]-->
   <script src="{{ url_for('static', filename='plugins/nprogress/nprogress.js') }}"></script>
 
-  
+
 </head>
 
 
@@ -77,14 +77,14 @@
       NProgress.start();
     </script>
 
-    
+
 
     <!-- ====================================
     ——— WRAPPER
     ===================================== -->
     <div class="wrapper">
-      
-      
+
+
         <!-- ====================================
           ——— LEFT SIDEBAR WITH OUT FOOTER
         ===================================== -->
@@ -94,16 +94,16 @@
             <div class="app-brand">
               <a href="{{ url_for('main.index') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}">
-                
+
               </a>
             </div>
             <!-- begin sidebar scrollbar -->
             <div class="sidebar-left" data-simplebar style="height: 100%;">
               <!-- sidebar menu -->
               <ul class="nav sidebar-inner" id="sidebar-menu">
-                
 
-                
+
+
                   <li
                    class="active"
                    >
@@ -112,11 +112,11 @@
                       <span class="nav-text">Dashboard</span>
                     </a>
                   </li>
-                
 
-                
 
-                
+
+
+
                   <!-- <li
                    >
                     <a class="sidenav-item-link" href="analytics.html">
@@ -124,7 +124,7 @@
                       <span class="nav-text">Analytics Dashboard</span>
                     </a>
                   </li> -->
-                
+
 
                   <li
                   >
@@ -133,15 +133,15 @@
                      <span class="nav-text">Getting Started</span>
                    </a>
                  </li>
-               
 
-                
+
+
                   <li class="section-title">
                     Apps
                   </li>
-                
 
-                
+
+
                   <li  class="has-sub" >
                     <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#users"
                       aria-expanded="false" aria-controls="users">
@@ -151,62 +151,62 @@
                     <ul  class="collapse"  id="users"
                       data-parent="#sidebar-menu">
                       <div class="sub-menu">
-                        
-                        
-                          
+
+
+
                             <li >
                               <a class="sidenav-item-link" href="{{ url_for('main.user_profile') }}">
                                 <span class="nav-text">User Profile</span>
-                                
+
                               </a>
                             </li>
-                          
-                                             
-                        
-                          
+
+
+
+
                             <li >
                               <a class="sidenav-item-link" href="{{ url_for('main.user_activities') }}">
                                 <span class="nav-text">User Activities</span>
-                                
+
                               </a>
                             </li>
-                          
-                        
 
-                        
-                        
-                          
+
+
+
+
+
                             <li >
                               <a class="sidenav-item-link" href="{{ url_for('main.user_profile_settings') }}">
                                 <span class="nav-text">User Profile Settings</span>
-                                
+
                               </a>
                             </li>
-                          
-                        
 
-                        
-                        
-                          
+
+
+
+
+
                             <li >
                               <a class="sidenav-item-link" href="{{ url_for('main.user_account_settings') }}">
                                 <span class="nav-text">User Account Settings</span>
-                                
+
                               </a>
                             </li>
-                          
-                        
-                        
 
-                        
+
+
+
+
                       </div>
                     </ul>
                   </li>
-                
 
-                
 
-                
+
+
+
                   <li
                    >
                     <a class="sidenav-item-link" href="{{ url_for('main.chat') }}">
@@ -214,7 +214,7 @@
                       <span class="nav-text">Chat</span>
                     </a>
                   </li>
-                
+
               </ul>
 
             </div>
@@ -233,13 +233,13 @@
           </div>
         </aside>
 
-      
+
 
       <!-- ====================================
       ——— PAGE WRAPPER
       ===================================== -->
       <div class="page-wrapper">
-        
+
           <!-- Header -->
           <header class="main-header" id="header">
             <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
@@ -275,7 +275,7 @@
 
                 <ul class="nav navbar-nav">
                   <!-- Offcanvas -->
-               
+
                   <li class="custom-dropdown">
                     <button class="notify-toggler custom-dropdown-toggler">
                       <i class="mdi mdi-bell-outline icon"></i>
@@ -303,7 +303,7 @@
                               <div class="media-sm-wrapper">
                                 <a href="{{ url_for('main.user_profile') }}">
                                   <img src="{{ url_for('static', filename='images/user/user.jpg') }}" alt="User Image">
-                                  
+
                                 </a>
                               </div>
                               <div class="media-body">
@@ -339,7 +339,7 @@
                               <div class="media-sm-wrapper">
                                 <a href="{{ url_for('main.user_profile') }}">
                                   <img src="{{ url_for('static', filename='images/user/user-sm-03.jpg') }}" alt="User Image">
-                                  
+
                                 </a>
                               </div>
                               <div class="media-body">
@@ -399,7 +399,7 @@
                               <div class="media-sm-wrapper">
                                 <a href="{{ url_for('main.user_profile') }}">
                                   <img src="{{ url_for('static', filename='images/user/user.jpg') }}" alt="User Image">
-                                  
+
                                 </a>
                               </div>
                               <div class="media-body">
@@ -417,7 +417,7 @@
                               <div class="media-sm-wrapper">
                                 <a href="{{ url_for('main.user_profile') }}">
                                   <img src="{{ url_for('static', filename='images/user/user.jpg') }}" alt="User Image">
-                                  
+
                                 </a>
                               </div>
                               <div class="media-body">
@@ -539,8 +539,8 @@
                   <!-- User Account -->
                   <li class="dropdown user-menu">
                     <button class="dropdown-toggle nav-link" data-toggle="dropdown">
-                      
-                      <img src="{{ url_for('static', filename='images/user/user-xs-01.jpg') }}" 
+
+                      <img src="{{ url_for('static', filename='images/user/user-xs-01.jpg') }}"
                       class="user-image rounded-circle" alt="User Image" />
                       <span class="d-none d-lg-inline-block">{{ session['user_name'] }}</span>
                     </button>
@@ -593,11 +593,11 @@
         <div class="input-group px-5">
           <!-- <a href=""><md-button class="md-fab md-mini mdi mdi-pencil-box-outline mdi-24px p-2"> </md-button></a> -->
           <button type="button" id= "new-chat" class="mb-1 btn btn-pill btn-success mb-2 btn-sm">New Chat</button>
-         
+
         </div>
         <div class="input-group px-5">
           <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Search...">
-         
+
         </div>
       </form>
       <ul class="card-body px-0" id="chat-history-container" data-simplebar style="height: 630px;">
@@ -611,7 +611,7 @@
     <div class="card card-default chat-right-sidebar">
       <div class="card-header">
         <h2>Chat</h2>
-       
+
         </div>
 
       <div class="card-body pb-0" data-simplebar style="height: 545px;">
@@ -632,9 +632,9 @@
   </div>
 </div>
 </div>
-          
+
         </div>
-        
+
           <!-- Footer -->
           <footer class="footer mt-auto">
 
@@ -710,22 +710,36 @@ function addChatHistCardToUI(chatIndex, isUser = true) {
 
 // Use event delegation to handle clicks on all dropdown items
 document.getElementById('chat-history-container').addEventListener('click', function(event) {
-  console.log(event.target);
-  const target = event.target;
+    console.log('Clicked element:', event.target);
 
-  // Check if the clicked element is a dropdown item
-  if (target.classList.contains('my-dropdown-item')) {
-    const action = target.textContent.trim();
-    const chatId = target.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id');
-
-    if (action === 'Delete Chat') {
-      console.log(`Deleting chat ${chatId}`);
-      // delete functionality
-    } else if (action === 'Edit') {
-      console.log(`Editing chat ${chatId}`);
-      // edit functionality
+    // Handle clicks on chat-history-item
+    const chatItem = event.target.closest('.chat-history-item');
+    console.log('Closest chat-history-item:', chatItem);
+    if (chatItem) {
+        const usernameButton = event.target.closest('.username');
+        if (usernameButton) {
+            const chatId = usernameButton.getAttribute('data-chat-id');
+            console.log(`Chat item clicked: ${chatId}`);
+            // Handle chat item selection logic here
+            return;
+        }
     }
-  }
+
+    // Handle clicks on dropdown items
+    const dropdownItem = event.target.closest('.my-dropdown-item');
+    if (dropdownItem) {
+        const action = dropdownItem.textContent.trim();
+        const chatId = dropdownItem.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id');
+
+        if (action === 'Delete Chat') {
+            console.log(`Deleting chat ${chatId}`);
+            // Delete functionality here
+        } else if (action === 'Edit') {
+            console.log(`Editing chat ${chatId}`);
+            // Edit functionality here
+        }
+        return;
+    }
 });
 
 
@@ -790,7 +804,7 @@ document.getElementById('chat-history-container').addEventListener('click', func
   if (event.target && event.target.classList.contains('username')) {
     // Get the chat ID from the button's `data-chat-id` attribute
     const chatId = event.target.getAttribute('data-chat-id');
-    
+
     if (chatId !== null) {
       console.log(`Event delegation: Loading chat history for Chat ${parseInt(chatId) + 1}`);
       loadChatFromHistory(parseInt(chatId));
@@ -814,7 +828,7 @@ function loadChatFromHistory(chatIndex) {
 
       </div>
     </div>
-    
+
                     <!-- Card Offcanvas -->
                     <div class="card card-offcanvas" id="contact-off" >
                       <div class="card-header">
@@ -826,28 +840,28 @@ function loadChatFromHistory(chatIndex) {
                         <div class="mb-4">
                           <input type="text" class="form-control form-control-lg form-control-secondary rounded-0" placeholder="Search contacts...">
                         </div>
-    
+
                     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
-                    
+
                     <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-                    
+
                     <script src="{{ url_for('static', filename='plugins/simplebar/simplebar.min.js') }}"></script>
 
                     <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
-                    
+
                     <script src="{{ url_for('static', filename='plugins/apexcharts/apexcharts.js') }}"></script>
-                    
+
                     <script src="{{ url_for('static', filename='plugins/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js') }}"></script>
-                    
-                    
-                    
+
+
+
                     <script src="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
 
                     <script src="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
 
                     <script src="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
-                    
-                    
+
+
                     <script src="{{ url_for('static', filename='plugins/daterangepicker/moment.min.js') }}"></script>
                     <script src="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.js') }}"></script>
 
@@ -868,23 +882,23 @@ function loadChatFromHistory(chatIndex) {
                         });
                       });
                     </script>
-                    
-                    
-                    
+
+
+
                     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-                    
-                    
-                    
+
+
+
                     <script src="{{ url_for('static', filename='plugins/toaster/toastr.min.js') }}"></script>
 
-                    
+
 
                     <script src="{{ url_for('static', filename='js/mono.js') }}"></script>
                     <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
                     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
                     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 
-                    
+
 
 
                     <!--  -->

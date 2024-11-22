@@ -17489,6 +17489,31 @@ div.copied {
   font-size: 1.5rem;
 }
 
+/* -------------------------------------
+   SimpleBar Fixes and Chat Container
+------------------------------------- */
+#chat-history-container .simplebar-content-wrapper {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+#chat-history-container .simplebar-content {
+    pointer-events: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#chat-history-container {
+    position: relative;
+    z-index: 2;
+}
+
+.chat-history-item {
+    position: relative;
+    z-index: 3;
+    cursor: pointer;
+}
+
 /*===== MODAL =====*/
 .modal .modal-header .btn-close-icon,
 .modal .modal-header .btn-edit-icon,
