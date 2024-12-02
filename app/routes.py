@@ -1,11 +1,13 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app import db, bcrypt
-from app.models import User, LoginHistory
+from app.models import User, LoginHistory, ChatHistory
 from app.llm import get_user_query_response
 from datetime import datetime
 from flask import session
 from flask import redirect, url_for
+
+
 
 main = Blueprint('main', __name__)
 
@@ -52,20 +54,33 @@ def login():
 
     data = request.get_json()
     user = User.query.filter_by(email=data['email'], is_active=1).first()
+
     if user and bcrypt.check_password_hash(user.password, data['password']):
+        # Set up session variables
         session['chat_history'] = []
         session['user_name'] = user.full_name  # Store the user's name in session
         session['user_email'] = user.email  # Store the user's email in session
 
-        print("Session data after login:", session)
-
-        # Create access token and record login history
+        # Create access token
         access_token = create_access_token(identity={'id': user.id, 'email': user.email})
+
+        # Store JWT token in session
+        session['access_token'] = access_token
+
+        # Record login history
         login_history = LoginHistory(user_id=user.id, timestamp=datetime.utcnow())
         db.session.add(login_history)
         db.session.commit()
-        
-        return jsonify({'access_token': access_token, 'user_id': user.id, 'redirect_url': url_for('main.main_page')})
+
+        # Log the session data for debugging
+        print("Session data after login:", session)
+
+        # Return the token and redirect URL
+        return jsonify({
+            'access_token': access_token,
+            'user_id': user.id,
+            'redirect_url': url_for('main.main_page')
+        })
     else:
         return jsonify({'message': 'Login failed!'}), 401
 
@@ -215,129 +230,91 @@ def update_user(user_id):
     db.session.commit()
     return jsonify({'message': 'User updated successfully!'})
 
+@main.route('/user/<user_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user(user_id):
+    user = User.query.filter_by(id=user_id, is_active=1).first()
+    if not user:
+        return jsonify({'message': 'User not found!'})
+    user.is_active = 0
+    db.session.commit()
+    return jsonify({'message': 'User deleted successfully!'})
+
 @main.route('/chat', methods=['GET', 'POST'])
 @jwt_required(optional=True)  # Only require JWT for POST
 def chat():
-    user_id = None
-    if get_jwt_identity():  # Check if a valid JWT exists
-        current_user = get_jwt_identity()
-        user_id = current_user['id']
-
     if request.method == 'GET':
-        # Fetch chat history for the current user if authenticated
-        if user_id:
-            user_chats = ChatHistory.query.filter_by(user_id=user_id).order_by(ChatHistory.timestamp).all()
-            chat_history = [{'role': chat.role, 'content': chat.content, 'timestamp': chat.timestamp} for chat in user_chats]
-        else:
-            chat_history = []
-        return jsonify({'chat_history': chat_history})
-    
-    # Handle POST request
+        current_app.logger.info("GET /chat request received.")
+        return render_template('chat.html')
+
+    # Process the POST request to handle chat messages
     data = request.get_json()
+    current_app.logger.info("POST /chat request received with data: %s", data)
+    current_app.logger.info("Request JSON: %s", request.get_json())
+    current_app.logger.info("Request Headers: %s", dict(request.headers))
+    current_app.logger.info("Request Cookies: %s", request.cookies)
+    current_app.logger.info("Request Args: %s", request.args)
+    current_app.logger.info("Request Form: %s", request.form)
+    current_app.logger.info("Session Data: %s", dict(session))
+
     if not data or 'query' not in data:
+        current_app.logger.warning("Invalid request: Missing 'query' key.")
         return jsonify({'message': 'Invalid request: missing query'}), 400
 
-    # Generate the response
+    # Retrieve chat history from session
     chat_history = session.get('chat_history', [])
+    current_app.logger.info("Session chat history loaded: %d entries", len(chat_history))
+
+    # Append the user's query to the chat history
     chat_history.append({'role': 'user', 'content': data['query']})
+    current_app.logger.info("User query added to chat history: %s", data['query'])
+
+    # Get user ID and save user's message to the database
+    current_user = get_jwt_identity()
+    current_app.logger.info("get_jwt_identity() on routes.py line 274 returns: %s", current_user)
+    user_id = current_user.get('id') if current_user else None
+    if user_id:
+        user_message = ChatHistory(
+            user_id=user_id,
+            title=f"Chat {user_id}",
+            last_message=data['query'],
+            role='user',
+            content=data['query'],
+            timestamp=datetime.utcnow()
+        )
+        db.session.add(user_message)
+        db.session.commit()
+        current_app.logger.info(
+            "User message saved to ChatHistory: Title=%s, Role=%s, User ID=%s, Timestamp=%s",
+            user_message.title, user_message.role, user_message.user_id, user_message.timestamp
+        )
+
+    # Generate the AI response
     response = get_user_query_response(data['query'], chat_history)
-
     if response:
-        if user_id:
-            # Fetch or create a new ChatHistory entry
-            chat_title = data.get('title', 'Untitled Chat')  # Optional chat title from the request
-            existing_chat = ChatHistory.query.filter_by(user_id=user_id, title=chat_title).first()
-
-            if existing_chat:
-                # Update the existing chat's last message and timestamp
-                existing_chat.last_message = response
-                existing_chat.timestamp = datetime.utcnow()
-                db.session.commit()
-                chat_id = existing_chat.id
-            else:
-                # Create a new chat entry
-                new_chat = ChatHistory(
-                    user_id=user_id,
-                    title=chat_title,
-                    last_message=response,
-                    timestamp=datetime.utcnow(),
-                    role='assistant',
-                    content=response
-                )
-                db.session.add(new_chat)
-                db.session.commit()
-                chat_id = new_chat.id
-
-            # Save user query and assistant response to the database
-            user_message = ChatHistory(user_id=user_id, role='user', content=data['query'], title=chat_title)
-            assistant_message = ChatHistory(user_id=user_id, role='assistant', content=response, title=chat_title)
-            db.session.add_all([user_message, assistant_message])
-            db.session.commit()
-
-        # Add to session chat history
         chat_history.append({'role': 'assistant', 'content': response})
         session['chat_history'] = chat_history
 
-        # Include chat_id and last_message in the response
-        return jsonify({
-            'response': response,
-            'chat_id': chat_id,
-            'last_message': response,
-        })
+        # Save the AI response to the database
+        if user_id:
+            assistant_response = ChatHistory(
+                user_id=user_id,
+                title=f"Chat {user_id}",
+                last_message=response,
+                role='assistant',
+                content=response,
+                timestamp=datetime.utcnow()
+            )
+            db.session.add(assistant_response)
+            db.session.commit()
+            current_app.logger.info(
+                "AI response saved to ChatHistory: Title=%s, Role=%s, User ID=%s, Timestamp=%s, Content=%s",
+                assistant_response.title, assistant_response.role, assistant_response.user_id,
+                assistant_response.timestamp, assistant_response.content
+            )
 
+        return jsonify({'response': response})
     else:
+        current_app.logger.error("Failed to generate AI response.")
         return jsonify({'message': 'Request could not be processed.'}), 500
 
-        
-@main.route('/chat/history', methods=['GET'])
-@jwt_required(optional=True)  # Only require JWT for logged-in users
-def get_chat_history():
-    current_user_id = None
-    if get_jwt_identity():  # Check if a valid JWT exists
-        current_user = get_jwt_identity()
-        current_user_id = current_user['id']
-
-    if not current_user_id:
-        return jsonify({'message': 'User not authenticated.'}), 403
-
-    # Fetch chat summaries (titles, last messages) for the current user
-    chat_summaries = (
-        db.session.query(
-            ChatHistory.title, 
-            ChatHistory.last_message, 
-            ChatHistory.timestamp
-        )
-        .filter_by(user_id=current_user_id)
-        .order_by(ChatHistory.timestamp.desc())
-        .all()
-    )
-
-    # Format data for frontend
-    response_data = [
-        {
-            'title': chat.title,
-            'last_message': chat.last_message,
-            'timestamp': chat.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-        }
-        for chat in chat_summaries
-    ]
-
-    return jsonify(response_data)        
-    
-@main.route('/update-chat/<int:chat_id>', methods=['PUT'])
-@jwt_required()
-def update_chat(chat_id):
-    data = request.get_json()
-    if not data or 'last_message' not in data:
-        return jsonify({'message': 'Invalid request: missing required fields'}), 400
-
-    # Fetch the chat by its ID
-    chat = ChatHistory.query.filter_by(id=chat_id).first()
-    if not chat:
-        return jsonify({'message': 'Chat not found'}), 404
-
-    # Update the last message and any other fields
-    chat.last_message = data['last_message']
-    db.session.commit()
-
-    return jsonify({'message': 'Chat updated successfully!'})    
