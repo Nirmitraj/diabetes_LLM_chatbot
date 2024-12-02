@@ -11,7 +11,7 @@
 
   <!-- Favicons -->
   <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
-  
+
   <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
@@ -21,18 +21,18 @@
   <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
 
   <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  
+
   <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 
   <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
 
   <link href="{{ url_for('static', filename='assets/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
-  
+
   <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
-  
+
   <!-- Template Main CSS File -->
   <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
-  
+
 </head>
 
 <body>
@@ -43,21 +43,21 @@
   <!-- ======= Header ======= -->
   <header id="header" class="d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
-  
+
       <a href="{{ url_for('main.index') }}" class="logo">
         <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Logo">
       </a>
-  
+
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link scrollto active" href="{{ url_for('main.index') }}">HOME</a></li>
           <!-- <li><a class="nav-link scrollto" href="#services">About</a></li> -->
-  
+
           {% if session.get('user_name') %}
             <!-- Display user menu if logged in -->
             <li class="dropdown user-menu">
               <button class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <img src="{{ url_for('static', filename='images/user/user-xs-01.jpg') }}" 
+                <img src="{{ url_for('static', filename='images/user/user-xs-01.jpg') }}"
                      class="user-image rounded-circle" alt="User Image" />
                 <span class="d-none d-lg-inline-block">{{ session['user_name'] }}</span>
               </button>
@@ -89,11 +89,11 @@
       <div class="container" data-aos="fade-up">
        <div class="" data-aos="fade-up" data-aos-delay="100">
 
-       
+
 
     <div class="row myrow d-flex justify-content-center">
         <div class="col-xl-4 col-lg-4 col-md-8 col-sm-12 text-center">
-           
+
             <div class="logincard">
                   <h2 class="pt-4">Log in</h2>
             <p class="">
@@ -113,13 +113,13 @@
              <div class="myline"></div>
               <div class="row mt-4">
                 <div class="col form-group-mine">
-                 <div class="form-group"> 
+                 <div class="form-group">
                    <a href="" style="font-size : 10px;">Forgot Password</a>
-         
+
                 </div>
                 </div>
                 <div class="col form-group-mine">
-                    <button type="submit" class="btn-block btn-primary btn-get-started mt-4">Submit</button> 
+                    <button type="submit" class="btn-block btn-primary btn-get-started mt-4">Submit</button>
                 </div>
               </div>
               <div id="login-error" style="color: red; margin-top: 10px;"></div>
@@ -129,7 +129,7 @@
 
          <div class="col-lg-8 col-md-8 col-sm-12">
             <div class="loginlady">
-              
+
             </div>
           </div>
 
@@ -137,13 +137,13 @@
           </div>
 
 
-         
+
         </div>
 
       </div>
     </section>
 
-  
+
   </main>
 
   <!-- ======= Footer ======= -->
@@ -201,21 +201,21 @@
 
   <!-- Vendor JS Files -->
   <script src="{{ url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
- 
+
   <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
 
   <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
   <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
- 
+
   <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
- 
+
   <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
- 
+
   <script src="{{ url_for('static', filename='assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
 
   <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
-  
+
   <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}">
 
@@ -236,6 +236,7 @@
 
       if (response.ok) {
         const data = await response.json();
+        localStorage.setItem('access_token', data.access_token);
         window.location.href = data.redirect_url;
       } else {
         const data = await response.json();
