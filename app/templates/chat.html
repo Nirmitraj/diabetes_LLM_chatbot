@@ -648,7 +648,26 @@
 let chatHistory = [];
 let currentChatMessages = [];
 
+document.getElementById('new-chat').addEventListener('click', function() {
+  if (currentChatMessages.length > 0) {
+    // Add current chat messages to chat history
+    chatHistory.push([...currentChatMessages]); // Store a copy of current messages
+
+    // Update chat history UI
+    addChatHistCardToUI(chatHistory.length - 1);
+
+    // Clear current chat messages
+    currentChatMessages = [];
+  }
+
+  // Clear chat container for a new conversation
+  const chatContainer = document.getElementById('chat-container');
+  chatContainer.innerHTML = '';
+  event.preventDefault();
+});
+
 document.getElementById('send-button').addEventListener('click', function () {
+  console.log("send button clicked")
   const messageInput = document.getElementById('user-message');
   const userMessage = messageInput.value.trim();
 
@@ -769,6 +788,7 @@ document.getElementById('chat-history-container').addEventListener('click', func
 
 // Function to add a new message to the chat container
 document.getElementById('send-button').addEventListener('click', function () {
+  console.log("clicked element: ", event.target);
   const messageInput = document.getElementById('user-message');
   const userMessage = messageInput.value.trim();
 
@@ -825,6 +845,7 @@ function addMessageToUI(content, isUser = true) {
 
 document.getElementById('chat-history-container').addEventListener('click', function(event) {
   // Check if the clicked element is a button with the `username` class
+  console.log("event target: ",event.target,"   clicked")
   if (event.target && event.target.classList.contains('username')) {
     // Get the chat ID from the button's `data-chat-id` attribute
     const chatId = event.target.getAttribute('data-chat-id');
