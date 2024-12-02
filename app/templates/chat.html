@@ -648,10 +648,32 @@
 let chatHistory = [];
 let currentChatMessages = [];
 
-document.getElementById('new-chat').addEventListener('click', function() {
+document.getElementById('new-chat').addEventListener('click', function () {
   if (currentChatMessages.length > 0) {
+    // Prepare the current messages for the backend
+    const token = localStorage.getItem('access_token');
+    fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
+      },
+      body: JSON.stringify({
+        new_chat: true,
+        messages: currentChatMessages, // Send all messages in the current conversation
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error('Failed to send current chat messages to backend:', response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error('Error sending current chat messages to backend:', error);
+      });
+
     // Add current chat messages to chat history
-    chatHistory.push([...currentChatMessages]); // Store a copy of current messages
+    chatHistory.push([...currentChatMessages]); // Store a copy of the current messages
 
     // Update chat history UI
     addChatHistCardToUI(chatHistory.length - 1);
