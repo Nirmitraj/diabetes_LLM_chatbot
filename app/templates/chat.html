@@ -648,10 +648,32 @@
 let chatHistory = [];
 let currentChatMessages = [];
 
-document.getElementById('new-chat').addEventListener('click', function() {
+document.getElementById('new-chat').addEventListener('click', function () {
   if (currentChatMessages.length > 0) {
+    // Prepare the current messages for the backend
+    const token = localStorage.getItem('access_token');
+    fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
+      },
+      body: JSON.stringify({
+        new_chat: true,
+        messages: currentChatMessages, // Send all messages in the current conversation
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error('Failed to send current chat messages to backend:', response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error('Error sending current chat messages to backend:', error);
+      });
+
     // Add current chat messages to chat history
-    chatHistory.push([...currentChatMessages]); // Store a copy of current messages
+    chatHistory.push([...currentChatMessages]); // Store a copy of the current messages
 
     // Update chat history UI
     addChatHistCardToUI(chatHistory.length - 1);
@@ -664,6 +686,49 @@ document.getElementById('new-chat').addEventListener('click', function() {
   const chatContainer = document.getElementById('chat-container');
   chatContainer.innerHTML = '';
   event.preventDefault();
+});
+
+document.getElementById('send-button').addEventListener('click', function () {
+  console.log("send button clicked")
+  const messageInput = document.getElementById('user-message');
+  const userMessage = messageInput.value.trim();
+
+  const token = localStorage.getItem('access_token'); // Retrieve the token from localStorage
+
+  if (userMessage && token) {
+    // Add the user message to the current chat UI
+    addMessageToUI(userMessage, true); // Display user message immediately
+    currentChatMessages.push({ content: userMessage, isUser: true }); // Save message to current chat
+    messageInput.value = ''; // Clear input field
+
+    // Send message to the backend to save and get a response
+    fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query: userMessage }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.response) {
+          // Display the assistant's response
+          addMessageToUI(data.response, false); // Add response to UI
+          currentChatMessages.push({ content: data.response, isUser: false }); // Save response to chat
+
+          // If this is a new chat, update the chat history sidebar
+          if (currentChatMessages.length === 1) {
+            chatHistory.push([...currentChatMessages]); // Save the full conversation
+            addChatHistCardToUI(chatHistory.length - 1); // Add to the sidebar
+            currentChatMessages = []; // Clear current chat messages
+          }
+        } else {
+          console.error('Error:', data.message);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
 });
 
 function addChatHistCardToUI(chatIndex, isUser = true) {
@@ -693,7 +758,7 @@ function addChatHistCardToUI(chatIndex, isUser = true) {
               </button>
               <div class="my-dropdown-content">
                 <div class="my-dropdown-item">Delete Chat <span class="mdi mdi-delete" style="color: rgb(177, 42, 42);"></span></div>
-                <div class="my-dropdown-item">Edit <span class="mdi mdi-square-edit-outline"></span></div>
+                <div class="my-dropdown-item">Rename <span class="mdi mdi-square-edit-outline"></span></div>
               </div>
             </div>
           </span>
@@ -729,22 +794,53 @@ document.getElementById('chat-history-container').addEventListener('click', func
     const dropdownItem = event.target.closest('.my-dropdown-item');
     if (dropdownItem) {
         const action = dropdownItem.textContent.trim();
-        const chatId = dropdownItem.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id');
+        const chatId = parseInt(dropdownItem.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id'), 10);
 
         if (action === 'Delete Chat') {
             console.log(`Deleting chat ${chatId}`);
-            // Delete functionality here
-        } else if (action === 'Edit') {
-            console.log(`Editing chat ${chatId}`);
-            // Edit functionality here
+            // Delete chat from chatHistory array
+            chatHistory.splice(chatId, 1);
+
+            // Rebuild the chat history UI
+            rebuildChatHistoryUI();
+
+            // Clear the current chat if it's the deleted one
+            if (chatId === currentChatIndex) {
+                document.getElementById('chat-container').innerHTML = '';
+                currentChatMessages = [];
+            }
+        } else if (action === 'Rename') {
+            console.log(`Renaming chat ${chatId}`);
+            // Prompt the user for a new name
+            const newChatName = prompt("Enter a new name for this chat:", `Chat ${chatId + 1}`);
+            if (newChatName) {
+                // Update the chat history UI with the new name
+                const usernameButton = document.querySelector(`button[data-chat-id="${chatId}"]`);
+                if (usernameButton) {
+                    usernameButton.textContent = newChatName;
+                }
+            }
         }
         return;
     }
 });
 
+/**
+ * Rebuild the chat history UI to reflect updated chatHistory array.
+ */
+ function rebuildChatHistoryUI() {
+    const chatHistContainer = document.getElementById('chat-history-container');
+    chatHistContainer.innerHTML = ''; // Clear the container
+
+    chatHistory.forEach((chat, index) => {
+        addChatHistCardToUI(index); // Add each chat back to the UI
+    });
+}
+
 
 // Function to add a new message to the chat container
 document.getElementById('send-button').addEventListener('click', function () {
+  console.log("clicked element: ", event.target);
   const messageInput = document.getElementById('user-message');
   const userMessage = messageInput.value.trim();
 
@@ -801,6 +897,7 @@ function addMessageToUI(content, isUser = true) {
 
 document.getElementById('chat-history-container').addEventListener('click', function(event) {
   // Check if the clicked element is a button with the `username` class
+  console.log("event target: ",event.target,"   clicked")
   if (event.target && event.target.classList.contains('username')) {
     // Get the chat ID from the button's `data-chat-id` attribute
     const chatId = event.target.getAttribute('data-chat-id');

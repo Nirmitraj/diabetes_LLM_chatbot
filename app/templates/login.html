@@ -235,7 +235,8 @@
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json();-
+        localStorage.setItem('access_token', data.access_token);
         window.location.href = data.redirect_url;
       } else {
         const data = await response.json();

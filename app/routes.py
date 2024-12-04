@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app import db, bcrypt
 from app.models import User, LoginHistory, ChatHistory
@@ -6,6 +6,8 @@ from app.llm import get_user_query_response
 from datetime import datetime
 from flask import session
 from flask import redirect, url_for
+
+
 
 main = Blueprint('main', __name__)
 
@@ -52,20 +54,33 @@ def login():
 
     data = request.get_json()
     user = User.query.filter_by(email=data['email'], is_active=1).first()
+
     if user and bcrypt.check_password_hash(user.password, data['password']):
+        # Set up session variables
         session['chat_history'] = []
         session['user_name'] = user.full_name  # Store the user's name in session
         session['user_email'] = user.email  # Store the user's email in session
 
-        print("Session data after login:", session)
-
-        # Create access token and record login history
+        # Create access token
         access_token = create_access_token(identity={'id': user.id, 'email': user.email})
+
+        # Store JWT token in session
+        session['access_token'] = access_token
+
+        # Record login history
         login_history = LoginHistory(user_id=user.id, timestamp=datetime.utcnow())
         db.session.add(login_history)
         db.session.commit()
-        
-        return jsonify({'access_token': access_token, 'user_id': user.id, 'redirect_url': url_for('main.main_page')})
+
+        # Log the session data for debugging
+        print("Session data after login:", session)
+
+        # Return the token and redirect URL
+        return jsonify({
+            'access_token': access_token,
+            'user_id': user.id,
+            'redirect_url': url_for('main.main_page')
+        })
     else:
         return jsonify({'message': 'Login failed!'}), 401
 
@@ -226,32 +241,97 @@ def delete_user(user_id):
     return jsonify({'message': 'User deleted successfully!'})
 
 @main.route('/chat', methods=['GET', 'POST'])
-@jwt_required(optional=True)  # Only require JWT for POST
+@jwt_required(optional=True)
 def chat():
     if request.method == 'GET':
-        # Render the chat page when accessed via GET
+        current_app.logger.info("GET /chat request received.")
         return render_template('chat.html')
-    
-    # Process the POST request to handle chat messages
+
+    # Process the POST request to handle chat actions
     data = request.get_json()
-    
-    if not data or 'query' not in data:
-        return jsonify({'message': 'Invalid request: missing query'}), 400
+    current_app.logger.info("POST /chat request received with data: %s", data)
+    current_app.logger.info("Session Data: %s", dict(session))
 
-    # Retrieve chat history from session or create a new one
-    chat_history = session.get('chat_history', [])
-    
-    # Append the user query to the chat history
-    chat_history.append({'role': 'user', 'content': data['query']})
+    if not data:
+        current_app.logger.warning("Invalid request: Missing data.")
+        return jsonify({'message': 'Invalid request: missing data'}), 400
 
-    # Generate the response with the maintained chat history
-    response = get_user_query_response(data['query'], chat_history)
+    current_user = get_jwt_identity()
+    user_id = current_user.get('id') if current_user else None
+    current_chat_id = session.get('current_chat_id', None)  # Track active chat session
 
-    # Add AI's response to the chat history if available
-    if response:
-        chat_history.append({'role': 'assistant', 'content': response})
-        session['chat_history'] = chat_history  # Update the session with the modified history
-        return jsonify({'response': response})
-    else:
-        return jsonify({'message': 'Request could not be processed.'}), 500
+    # Handle "new-chat" event
+    if data.get('new_chat', False):
+        current_app.logger.info("Frontend requested a new chat.")
 
+        # Collect the messages from the current conversation
+        messages = data.get('messages', [])
+        chat_content = "\n".join(
+            [f"{'User' if msg['isUser'] else 'Assistant'}: {msg['content']}" for msg in messages]
+        )
+
+        if user_id:
+            # Create a new chat row in the database with the collected messages
+            new_chat = ChatHistory(
+                user_id=user_id,
+                title=f"Chat {user_id} {datetime.utcnow()}",
+                last_message=messages[-1]['content'] if messages else "",
+                role='user',
+                content=chat_content,  # Add all current messages
+                timestamp=datetime.utcnow(),
+            )
+            db.session.add(new_chat)
+            db.session.commit()
+
+            # Update session to track new chat
+            current_chat_id = new_chat.id
+            session['current_chat_id'] = current_chat_id
+
+            current_app.logger.info(
+                "New chat created with ID: %s and content:\n%s", current_chat_id, chat_content
+            )
+        return jsonify({'message': 'New chat created'}), 201
+
+    # Handle a user query
+    if 'query' in data:
+        user_query = data['query']
+        current_app.logger.info("Processing user query: %s", user_query)
+
+        # Append the user's query to the current chat
+        if user_id and current_chat_id:
+            chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id).first()
+            if chat_history_entry:
+                chat_history_entry.content += f"\nUser: {user_query}"
+                chat_history_entry.last_message = user_query
+                db.session.commit()
+                current_app.logger.info("User query added to chat ID %s", current_chat_id)
+            else:
+                current_app.logger.warning("No active chat found for ID %s", current_chat_id)
+
+        # Generate the AI response
+        chat_history = session.get('chat_history', [])
+        chat_history.append({'role': 'user', 'content': user_query})
+
+        response = get_user_query_response(user_query, chat_history)
+        if response:
+            # Append AI response to the chat
+            if user_id and current_chat_id:
+                if chat_history_entry:
+                    chat_history_entry.content += f"\nAssistant: {response}"
+                    chat_history_entry.last_message = response
+                    db.session.commit()
+                    current_app.logger.info("AI response added to chat ID %s", current_chat_id)
+
+            # Update session chat history
+            chat_history.append({'role': 'assistant', 'content': response})
+            session['chat_history'] = chat_history
+
+            current_app.logger.info("Chat response sent back to user.")
+            return jsonify({'response': response})
+        else:
+            current_app.logger.error("Failed to generate AI response.")
+            return jsonify({'message': 'Request could not be processed.'}), 500
+
+    # Handle invalid cases
+    current_app.logger.warning("Invalid request: Missing 'query' or 'new_chat'.")
+    return jsonify({'message': 'Invalid request: missing query or new_chat'}), 400

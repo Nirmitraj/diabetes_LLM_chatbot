@@ -1,9 +1,14 @@
 from datetime import datetime
 from app import db
+from sqlalchemy import UniqueConstraint
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
+    __table_args__ = (
+            UniqueConstraint('email', name='uq_user_email'),
+    )
     password = db.Column(db.String(150), nullable=False)
     created_on = db.Column(db.DateTime, default=datetime.utcnow)
     full_name = db.Column(db.String(150), nullable=True)
