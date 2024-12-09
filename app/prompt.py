@@ -107,3 +107,10 @@ You are a medical assistant specialized in diabetes and having a conversation wi
 User: {question}
 AI:
 """
+
+chat_title_prompt_template = """
+Here is the user question:
+{question}
+
+Generate a concise title (no more than 5 words) that accurately reflects the main theme or topic of the question. Just use plain text and ignore use of emojis, quotation marks or special formatting. RESPOND ONLY WITH THE TITLE TEXT.
+"""

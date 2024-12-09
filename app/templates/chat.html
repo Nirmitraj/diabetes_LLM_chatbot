@@ -764,12 +764,40 @@ document.getElementById('send-button').addEventListener('click', function () {
   }
 });
 
-function addChatHistCardToUI(chatIndex, isUser = true) {
+async function addChatHistCardToUI(chatIndex, isUser = true) {
   const chatHistContainer = document.getElementById('chat-history-container');
-  const newChatHist = document.createElement('li');
   const lastMessagePreview = chatHistory[chatIndex][chatHistory[chatIndex].length - 1].content;
-
+  const firstUserMessage = chatHistory[chatIndex][0].content;
+  const newChatHist = document.createElement('li');
   newChatHist.className = 'chat-history-item';
+
+  let chatTitle = 'New Chat'; // Default title
+
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    try {
+      // Fetch the chat title from the server
+      const response = await fetch('/chat_title', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
+        },
+        body: JSON.stringify({ query: firstUserMessage }),
+      });
+
+      const data = await response.json();
+
+      if (data.response) {
+        chatTitle = data.response; // Update the chat title
+        console.log('Chat title received:', chatTitle);
+      } else {
+        console.error('Error fetching chat title:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching chat title:', error);
+    }
+  }
 
   newChatHist.innerHTML = `
     <div class="media media-message">
@@ -780,7 +808,7 @@ function addChatHistCardToUI(chatIndex, isUser = true) {
       <div class="media-body">
         <div class="message-contents">
           <span class="d-flex justify-content-between align-items-center mb-1">
-            <button data-chat-id="${chatIndex}" class="username text-dark">Chat ${chatIndex + 1}</button>
+            <button data-chat-id="${chatIndex}" class="username text-dark">${chatTitle}</button>
             <div class="my-dropdown">
               <button class="my-dropdown-btn" data-chat-id="${chatIndex}">
                 <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" class="icon-md">

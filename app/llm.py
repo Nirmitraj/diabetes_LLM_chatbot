@@ -1,4 +1,4 @@
-from app.prompt import prompt_template, question_categorize_prompt_template, conversation_prompt_template
+from app.prompt import prompt_template, question_categorize_prompt_template, conversation_prompt_template, chat_title_prompt_template
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langchain_community.vectorstores import FAISS
@@ -11,6 +11,7 @@ DB_FAISS_PATH = 'vectorstore/db_faiss'
 PROMPT=PromptTemplate(template=prompt_template, input_variables=["chat_history", "context", "question"])
 CATEGORIZE_PROMPT=PromptTemplate(template=question_categorize_prompt_template, input_variables=["chat_history", "question"])
 CONVERSATIONAL_PROMPT=PromptTemplate(template=conversation_prompt_template, input_variables=["chat_history", "question"])
+CHAT_TITLE_PROMPT=PromptTemplate(template=chat_title_prompt_template, input_variables=["question"])
 
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
 llm = ChatGroq(
@@ -34,6 +35,9 @@ cuq_chain = LLMChain(prompt=CATEGORIZE_PROMPT, llm=llm, verbose=True)
 # Chain for answering based on the chat history only
 conv_chain = LLMChain(prompt=CONVERSATIONAL_PROMPT, llm=llm, memory=memory, verbose=True)
 
+# Chain for the chat title using the user query
+chat_title_chain = LLMChain(prompt=CHAT_TITLE_PROMPT, llm=llm, verbose=True)
+
 def get_user_query_response(question, chat_history):
     cat = cuq_chain.run({'question': question, 'chat_history': chat_history})
     print(cat)
@@ -43,6 +47,9 @@ def get_user_query_response(question, chat_history):
     else:
         # print(conv_chain({'question': question, 'chat_history': chat_history}))
         return conv_chain({'question': question, 'chat_history': chat_history})['text']
+
+def get_user_query_title(question):
+    return chat_title_chain({'question': question})['text']
 
 # query = "What is type 2 diabetes?"
 # response = qa_chain({'query': query})

@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, render_template, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from app import db, bcrypt
 from app.models import User, LoginHistory, ChatHistory
-from app.llm import get_user_query_response
+from app.llm import get_user_query_response, get_user_query_title
 from datetime import datetime
 from flask import session
 from flask import redirect, url_for
@@ -240,6 +240,24 @@ def delete_user(user_id):
     db.session.commit()
     return jsonify({'message': 'User deleted successfully!'})
 
+@main.route('/chat_title', methods=['POST'])
+@jwt_required()
+def chat_title():
+    try:
+        data = request.get_json()
+        if not data or 'query' not in data:
+            return jsonify({'message': 'Missing query parameter'}), 400
+
+        # Generate the title with the user query
+        title = get_user_query_title(data['query'])
+
+        if title:
+            return jsonify({'response': title})
+        else:
+            return jsonify({'message': 'Request could not be processed.'})
+    except Exception as e:
+        return jsonify({'message': str(e)})
+
 @main.route('/chat', methods=['GET', 'POST'])
 @jwt_required(optional=True)
 def chat():
@@ -274,7 +292,7 @@ def chat():
             # Create a new chat row in the database with the collected messages
             new_chat = ChatHistory(
                 user_id=user_id,
-                title=f"Chat {user_id} {datetime.utcnow()}",
+                title=str(get_user_query_title(messages[0]['content'])),
                 last_message=messages[-1]['content'] if messages else "",
                 role='user',
                 content=chat_content,  # Add all current messages
