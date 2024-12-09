@@ -648,6 +648,39 @@
 let chatHistory = [];
 let currentChatMessages = [];
 
+document.addEventListener('DOMContentLoaded', function () {
+  const token = localStorage.getItem('access_token');
+
+  if (token) {
+    fetch('/get-chat-history', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error('Failed to fetch chat history:', response.statusText);
+          return;
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.chat_history) {
+          console.log('Chat history received:', data.chat_history);
+
+          // Populate chat history cards in the UI
+          data.chat_history.forEach((chat, index) => {
+            chatHistory.push(chat.messages); // Add to chatHistory array
+            addChatHistCardToUI(index); // Add chat card to the UI
+          });
+        }
+      })
+      .catch(error => console.error('Error fetching chat history:', error));
+  }
+});
+
 document.getElementById('new-chat').addEventListener('click', function () {
   if (currentChatMessages.length > 0) {
     // Prepare the current messages for the backend
@@ -797,6 +830,7 @@ document.getElementById('chat-history-container').addEventListener('click', func
         const chatId = parseInt(dropdownItem.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id'), 10);
 
         if (action === 'Delete Chat') {
+          console.log('Clicked element:', event.target);
             console.log(`Deleting chat ${chatId}`);
             // Delete chat from chatHistory array
             chatHistory.splice(chatId, 1);
@@ -810,6 +844,7 @@ document.getElementById('chat-history-container').addEventListener('click', func
                 currentChatMessages = [];
             }
         } else if (action === 'Rename') {
+          console.log('Clicked element:', event.target);
             console.log(`Renaming chat ${chatId}`);
             // Prompt the user for a new name
             const newChatName = prompt("Enter a new name for this chat:", `Chat ${chatId + 1}`);

@@ -335,3 +335,35 @@ def chat():
     # Handle invalid cases
     current_app.logger.warning("Invalid request: Missing 'query' or 'new_chat'.")
     return jsonify({'message': 'Invalid request: missing query or new_chat'}), 400
+
+@main.route('/get-chat-history', methods=['GET'])
+@jwt_required()
+def getChatHistory():
+    if request.method == 'GET':
+        current_user = get_jwt_identity()
+        if not current_user:
+            return jsonify({'message': 'User not authenticated'}), 401
+
+        user_id = current_user.get('id')
+        if not user_id:
+            return jsonify({'message': 'Invalid user'}), 401
+
+        # Fetch chat history for the user
+        chat_history_records = ChatHistory.query.filter_by(user_id=user_id).all()
+
+        # Prepare the chat history data
+        chat_history = []
+        for record in chat_history_records:
+            messages = [
+                {'content': line.split(": ", 1)[1], 'isUser': line.startswith("User")}
+                for line in record.content.split("\n")
+                if ": " in line
+            ]
+            chat_history.append({
+                'id': record.id,
+                'title': record.title,
+                'messages': messages,
+                'timestamp': record.timestamp
+            })
+
+        return jsonify({'chat_history': chat_history}), 200
