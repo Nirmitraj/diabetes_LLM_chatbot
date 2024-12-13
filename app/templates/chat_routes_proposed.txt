@@ -1,0 +1,62 @@
+@main.route('/chat', methods=['GET', 'POST'])
+@jwt_required(optional=True)  # Only require JWT for POST
+def chat():
+    if request.method == 'GET':
+        current_app.logger.info("GET /chat request received.")
+        return render_template('chat.html')
+
+    # Process the POST request to handle chat messages
+    data = request.get_json()
+    if not data or 'query' not in data:
+        current_app.logger.warning("Invalid request: Missing 'query' key.")
+        return jsonify({'message': 'Invalid request: missing query'}), 400
+
+    # Retrieve current chat ID and user ID from the session or set up new chat
+    current_user = get_jwt_identity()
+    user_id = current_user.get('id') if current_user else None
+    current_chat_id = session.get('current_chat_id', None)  # Track active chat session
+
+    # Check if "new-chat" was triggered
+    if data.get('new_chat', False):
+        # Create a new chat row in the database
+        new_chat = ChatHistory(
+            user_id=user_id,
+            title=f"Chat {user_id} {datetime.utcnow()}",
+            last_message="",
+            role='user',
+            content="",  # Start with empty content
+            timestamp=datetime.utcnow()
+        )
+        db.session.add(new_chat)
+        db.session.commit()
+
+        # Store the new chat ID in the session
+        current_chat_id = new_chat.id
+        session['current_chat_id'] = current_chat_id
+
+        current_app.logger.info("New chat created with ID: %s", current_chat_id)
+
+    # Append the user's query to the current chat
+    chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id).first()
+    if chat_history_entry:
+        chat_history_entry.content += f"\nUser: {data['query']}"
+        chat_history_entry.last_message = data['query']
+        db.session.commit()
+        current_app.logger.info("Appended user message to chat ID %s", current_chat_id)
+
+    # Generate the AI response
+    response = get_user_query_response(data['query'], session.get('chat_history', []))
+    if response:
+        session['chat_history'] = session.get('chat_history', []) + [{'role': 'assistant', 'content': response}]
+
+        # Append the AI response to the current chat
+        if chat_history_entry:
+            chat_history_entry.content += f"\nAssistant: {response}"
+            chat_history_entry.last_message = response
+            db.session.commit()
+            current_app.logger.info("Appended AI response to chat ID %s", current_chat_id)
+
+        return jsonify({'response': response})
+    else:
+        current_app.logger.error("Failed to generate AI response.")
+        return jsonify({'message': 'Request could not be processed.'}), 500

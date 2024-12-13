@@ -268,65 +268,47 @@ def chat():
     # Process the POST request to handle chat actions
     data = request.get_json()
     current_app.logger.info("POST /chat request received with data: %s", data)
+    current_app.logger.info("Session Data: %s", dict(session))
 
     if not data:
+        current_app.logger.warning("Invalid request: Missing data.")
         return jsonify({'message': 'Invalid request: missing data'}), 400
 
     current_user = get_jwt_identity()
     user_id = current_user.get('id') if current_user else None
-    current_chat_id = data.get('current_chat_id', None)  # Expecting the chat ID from the frontend
+    current_chat_id = session.get('current_chat_id', None)  # Track active chat session
 
     # Handle "new-chat" event
     if data.get('new_chat', False):
+        current_app.logger.info("Frontend requested a new chat.")
+
+        # Collect the messages from the current conversation
         messages = data.get('messages', [])
         chat_content = "\n".join(
             [f"{'User' if msg['isUser'] else 'Assistant'}: {msg['content']}" for msg in messages]
         )
 
         if user_id:
+            # Create a new chat row in the database with the collected messages
             new_chat = ChatHistory(
                 user_id=user_id,
-                title=str(get_user_query_title(messages[0]['content'])) if messages else "New Chat",
+                title=str(get_user_query_title(messages[0]['content'])),
                 last_message=messages[-1]['content'] if messages else "",
                 role='user',
-                content=chat_content,
+                content=chat_content,  # Add all current messages
                 timestamp=datetime.utcnow(),
             )
             db.session.add(new_chat)
             db.session.commit()
 
-            return jsonify({'message': 'New chat created', 'chat_id': new_chat.id}), 201
+            # Update session to track new chat
+            current_chat_id = new_chat.id
+            session['current_chat_id'] = current_chat_id
 
-    # Handle a user query
-    if 'query' in data:
-        user_query = data['query']
-        if user_id and current_chat_id:
-            # Fetch the existing chat from the database
-            chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id, user_id=user_id).first()
-            if chat_history_entry:
-                chat_history_entry.content += f"\nUser: {user_query}"
-                chat_history_entry.last_message = user_query
-                db.session.add(chat_history_entry)  # Add the updated entry
-                db.session.commit()
-
-                current_app.logger.info("User query added to chat ID %s", current_chat_id)
-            else:
-                return jsonify({'message': 'Chat ID not found or no active chat.'}), 400
-
-        # Generate the AI response
-        response = get_user_query_response(user_query, session.get('chat_history', []))
-        if response and user_id and current_chat_id:
-            chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id, user_id=user_id).first()
-            if chat_history_entry:
-                chat_history_entry.content += f"\nAssistant: {response}"
-                chat_history_entry.last_message = response
-                db.session.add(chat_history_entry)  # Add the updated entry
-                db.session.commit()
-
-                current_app.logger.info("AI response added to chat ID %s", current_chat_id)
-            return jsonify({'response': response}), 200
-
-    return jsonify({'message': 'Invalid request: missing data or action.'}), 400
+            current_app.logger.info(
+                "New chat created with ID: %s and content:\n%s", current_chat_id, chat_content
+            )
+        return jsonify({'message': 'New chat created'}), 201
 
     # Handle a user query
     if 'query' in data:
@@ -335,18 +317,14 @@ def chat():
 
         # Append the user's query to the current chat
         if user_id and current_chat_id:
-            chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id, user_id=user_id).first()
-            print(f"Chat ID {current_chat_id} found")
+            chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id).first()
             if chat_history_entry:
-                print(f"chat_history_entry found")
                 chat_history_entry.content += f"\nUser: {user_query}"
                 chat_history_entry.last_message = user_query
                 db.session.commit()
                 current_app.logger.info("User query added to chat ID %s", current_chat_id)
             else:
                 current_app.logger.warning("No active chat found for ID %s", current_chat_id)
-                print(f"Chat ID {current_chat_id} not found")
-                return jsonify({'message': 'Invalid chat ID or no active chat found.'}), 400
 
         # Generate the AI response
         chat_history = session.get('chat_history', [])
@@ -356,7 +334,6 @@ def chat():
         if response:
             # Append AI response to the chat
             if user_id and current_chat_id:
-                chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id, user_id=user_id).first()
                 if chat_history_entry:
                     chat_history_entry.content += f"\nAssistant: {response}"
                     chat_history_entry.last_message = response

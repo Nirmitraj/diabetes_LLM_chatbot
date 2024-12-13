@@ -647,177 +647,31 @@
             <script>
 let chatHistory = [];
 let currentChatMessages = [];
-let currentChatId = null; // Tracks the active conversation
 
-document.addEventListener('DOMContentLoaded', function () {
-  const token = localStorage.getItem('access_token');
-
-  if (token) {
-    fetch('/get-chat-history', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(response => {
-        if (!response.ok) {
-          console.error('Failed to fetch chat history:', response.statusText);
-          return;
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.chat_history) {
-          console.log('Chat history received:', data.chat_history);
-
-          // Populate chat history cards in the UI
-          data.chat_history.forEach((chat, index) => {
-            chatHistory.push(chat.messages); // Add to chatHistory array
-            addChatHistCardToUI(index); // Add chat card to the UI
-          });
-        }
-      })
-      .catch(error => console.error('Error fetching chat history:', error));
-  }
-});
-
-document.getElementById('new-chat').addEventListener('click', function () {
+document.getElementById('new-chat').addEventListener('click', function() {
   if (currentChatMessages.length > 0) {
-    const token = localStorage.getItem('access_token');
-    fetch('/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
-      },
-      body: JSON.stringify({
-        new_chat: true,
-        messages: currentChatMessages, // Send all messages in the current conversation
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.chat_id) {
-          currentChatId = data.chat_id; // Set currentChatId to the new chat ID
-          console.log(`New chat ID set: ${currentChatId}`);
+    // Add current chat messages to chat history
+    chatHistory.push([...currentChatMessages]); // Store a copy of current messages
 
-          // Update chatHistory with the new chat and retain currentChatMessages
-          chatHistory.push({
-            chat_id: currentChatId,
-            messages: [...currentChatMessages], // Retain the current messages for this chat
-            title: 'New Chat', // Default title (can be updated later)
-          });
+    // Update chat history UI
+    addChatHistCardToUI(chatHistory.length - 1);
 
-          // Add the new chat to the sidebar
-          addChatHistCardToUI(chatHistory.length - 1);
-
-          // Clear current chat messages for the next conversation
-          currentChatMessages = [];
-          document.getElementById('chat-container').innerHTML = '';
-        } else {
-          console.error('Failed to create new chat or retrieve chat ID.');
-        }
-      })
-      .catch(error => console.error('Error creating a new chat:', error));
-  } else {
-    console.log('No current chat messages to save. Starting a fresh chat.');
+    // Clear current chat messages
+    currentChatMessages = [];
   }
 
-  // Clear UI for a new conversation
+  // Clear chat container for a new conversation
   const chatContainer = document.getElementById('chat-container');
   chatContainer.innerHTML = '';
-
-  // Prevent default action
   event.preventDefault();
 });
 
-
-document.getElementById('send-button').addEventListener('click', function () {
-  const messageInput = document.getElementById('user-message');
-  const userMessage = messageInput.value.trim();
-
-  if (userMessage) {
-    const token = localStorage.getItem('access_token');
-
-    // Add the user message to the current chat UI
-    addMessageToUI(userMessage, true);
-    currentChatMessages.push({ content: userMessage, isUser: true });
-
-    if (currentChatId) {
-      // Send the message to the backend if a chat ID exists
-      fetch('/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          query: userMessage,
-          current_chat_id: currentChatId, // Ensure correct backend ID is used
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.response) {
-            // Display the assistant's response
-            addMessageToUI(data.response, false);
-            currentChatMessages.push({ content: data.response, isUser: false });
-
-            // Update chatHistory with the new messages
-            const chatIndex = chatHistory.findIndex(chat => chat.chat_id === currentChatId);
-            if (chatIndex !== -1) {
-              chatHistory[chatIndex].messages = [...currentChatMessages];
-            }
-          }
-        })
-        .catch(error => console.error('Error sending message:', error));
-    } else {
-      // Warn and keep messages on the frontend if no chat ID exists
-      console.warn(
-        "No active chat in the backend. Messages are being temporarily stored in currentChatMessages."
-      );
-    }
-
-    // Clear the input field
-    messageInput.value = '';
-  }
-});
-
-async function addChatHistCardToUI(chatIndex, isUser = true) {
+function addChatHistCardToUI(chatIndex, isUser = true) {
   const chatHistContainer = document.getElementById('chat-history-container');
-  const lastMessagePreview = chatHistory[chatIndex][chatHistory[chatIndex].length - 1].content;
-  const firstUserMessage = chatHistory[chatIndex][0].content;
   const newChatHist = document.createElement('li');
+  const lastMessagePreview = chatHistory[chatIndex][chatHistory[chatIndex].length - 1].content;
+
   newChatHist.className = 'chat-history-item';
-
-  let chatTitle = 'New Chat'; // Default title
-
-  const token = localStorage.getItem('access_token');
-  if (token) {
-    try {
-      // Fetch the chat title from the server
-      const response = await fetch('/chat_title', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` }), // Include token if available
-        },
-        body: JSON.stringify({ query: firstUserMessage }),
-      });
-
-      const data = await response.json();
-
-      if (data.response) {
-        chatTitle = data.response; // Update the chat title
-        console.log('Chat title received:', chatTitle);
-      } else {
-        console.error('Error fetching chat title:', data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching chat title:', error);
-    }
-  }
 
   newChatHist.innerHTML = `
     <div class="media media-message">
@@ -828,7 +682,7 @@ async function addChatHistCardToUI(chatIndex, isUser = true) {
       <div class="media-body">
         <div class="message-contents">
           <span class="d-flex justify-content-between align-items-center mb-1">
-            <button data-chat-id="${chatIndex}" class="username text-dark">${chatTitle}</button>
+            <button data-chat-id="${chatIndex}" class="username text-dark">Chat ${chatIndex + 1}</button>
             <div class="my-dropdown">
               <button class="my-dropdown-btn" data-chat-id="${chatIndex}">
                 <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" class="icon-md">
@@ -839,7 +693,7 @@ async function addChatHistCardToUI(chatIndex, isUser = true) {
               </button>
               <div class="my-dropdown-content">
                 <div class="my-dropdown-item">Delete Chat <span class="mdi mdi-delete" style="color: rgb(177, 42, 42);"></span></div>
-                <div class="my-dropdown-item">Rename <span class="mdi mdi-square-edit-outline"></span></div>
+                <div class="my-dropdown-item">Edit <span class="mdi mdi-square-edit-outline"></span></div>
               </div>
             </div>
           </span>
@@ -875,55 +729,22 @@ document.getElementById('chat-history-container').addEventListener('click', func
     const dropdownItem = event.target.closest('.my-dropdown-item');
     if (dropdownItem) {
         const action = dropdownItem.textContent.trim();
-        const chatId = parseInt(dropdownItem.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id'), 10);
+        const chatId = dropdownItem.closest('.my-dropdown').querySelector('.my-dropdown-btn').getAttribute('data-chat-id');
 
         if (action === 'Delete Chat') {
-          console.log('Clicked element:', event.target);
             console.log(`Deleting chat ${chatId}`);
-            // Delete chat from chatHistory array
-            chatHistory.splice(chatId, 1);
-
-            // Rebuild the chat history UI
-            rebuildChatHistoryUI();
-
-            // Clear the current chat if it's the deleted one
-            if (chatId === currentChatIndex) {
-                document.getElementById('chat-container').innerHTML = '';
-                currentChatMessages = [];
-            }
-        } else if (action === 'Rename') {
-          console.log('Clicked element:', event.target);
-            console.log(`Renaming chat ${chatId}`);
-            // Prompt the user for a new name
-            const newChatName = prompt("Enter a new name for this chat:", `Chat ${chatId + 1}`);
-            if (newChatName) {
-                // Update the chat history UI with the new name
-                const usernameButton = document.querySelector(`button[data-chat-id="${chatId}"]`);
-                if (usernameButton) {
-                    usernameButton.textContent = newChatName;
-                }
-            }
+            // Delete functionality here
+        } else if (action === 'Edit') {
+            console.log(`Editing chat ${chatId}`);
+            // Edit functionality here
         }
         return;
     }
 });
 
-/**
- * Rebuild the chat history UI to reflect updated chatHistory array.
- */
- function rebuildChatHistoryUI() {
-    const chatHistContainer = document.getElementById('chat-history-container');
-    chatHistContainer.innerHTML = ''; // Clear the container
-
-    chatHistory.forEach((chat, index) => {
-        addChatHistCardToUI(index); // Add each chat back to the UI
-    });
-}
-
 
 // Function to add a new message to the chat container
 document.getElementById('send-button').addEventListener('click', function () {
-  console.log("clicked element: ", event.target);
   const messageInput = document.getElementById('user-message');
   const userMessage = messageInput.value.trim();
 
@@ -978,25 +799,18 @@ function addMessageToUI(content, isUser = true) {
   chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
 }
 
-document.getElementById('chat-history-container').addEventListener('click', function (event) {
+document.getElementById('chat-history-container').addEventListener('click', function(event) {
+  // Check if the clicked element is a button with the `username` class
   if (event.target && event.target.classList.contains('username')) {
-    const chatIndex = parseInt(event.target.getAttribute('data-chat-id'), 10);
-    const selectedChat = chatHistory[chatIndex];
+    // Get the chat ID from the button's `data-chat-id` attribute
+    const chatId = event.target.getAttribute('data-chat-id');
 
-    if (selectedChat) {
-      currentChatId = selectedChat.chat_id; // Set currentChatId to the backend ID
-      console.log(`currentChatId updated to: ${currentChatId}`);
-
-      // Load messages for the selected chat
-      loadChatFromHistory(chatIndex);
-
-      // Sync currentChatMessages with the selected chat
-      currentChatMessages = [...selectedChat.messages];
-      console.log("currentChatMessages updated:", currentChatMessages);
+    if (chatId !== null) {
+      console.log(`Event delegation: Loading chat history for Chat ${parseInt(chatId) + 1}`);
+      loadChatFromHistory(parseInt(chatId));
     }
   }
 });
-
 
 function loadChatFromHistory(chatIndex) {
   console.log(`Loading chat history for Chat ${chatIndex + 1}`);

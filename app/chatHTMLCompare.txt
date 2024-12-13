@@ -80,13 +80,13 @@
 
 
     <!-- ====================================
-    â€”â€”â€” WRAPPER
+    ——— WRAPPER
     ===================================== -->
     <div class="wrapper">
 
 
         <!-- ====================================
-          â€”â€”â€” LEFT SIDEBAR WITH OUT FOOTER
+          ——— LEFT SIDEBAR WITH OUT FOOTER
         ===================================== -->
         <aside class="left-sidebar sidebar-dark" id="left-sidebar">
           <div id="sidebar" class="sidebar sidebar-with-footer">
@@ -236,7 +236,7 @@
 
 
       <!-- ====================================
-      â€”â€”â€” PAGE WRAPPER
+      ——— PAGE WRAPPER
       ===================================== -->
       <div class="page-wrapper">
 
@@ -583,7 +583,7 @@
           </header>
 
         <!-- ====================================
-        â€”â€”â€” CONTENT WRAPPER
+        ——— CONTENT WRAPPER
         ===================================== -->
         <div class="content-wrapper">
           <div class="content"><div class="row no-gutters">
@@ -647,7 +647,6 @@
             <script>
 let chatHistory = [];
 let currentChatMessages = [];
-let currentChatId = null; // Tracks the active conversation
 
 document.addEventListener('DOMContentLoaded', function () {
   const token = localStorage.getItem('access_token');
@@ -684,6 +683,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.getElementById('new-chat').addEventListener('click', function () {
   if (currentChatMessages.length > 0) {
+    // Prepare the current messages for the backend
     const token = localStorage.getItem('access_token');
     fetch('/chat', {
       method: 'POST',
@@ -696,91 +696,71 @@ document.getElementById('new-chat').addEventListener('click', function () {
         messages: currentChatMessages, // Send all messages in the current conversation
       }),
     })
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.chat_id) {
-          currentChatId = data.chat_id; // Set currentChatId to the new chat ID
-          console.log(`New chat ID set: ${currentChatId}`);
-
-          // Update chatHistory with the new chat and retain currentChatMessages
-          chatHistory.push({
-            chat_id: currentChatId,
-            messages: [...currentChatMessages], // Retain the current messages for this chat
-            title: 'New Chat', // Default title (can be updated later)
-          });
-
-          // Add the new chat to the sidebar
-          addChatHistCardToUI(chatHistory.length - 1);
-
-          // Clear current chat messages for the next conversation
-          currentChatMessages = [];
-          document.getElementById('chat-container').innerHTML = '';
-        } else {
-          console.error('Failed to create new chat or retrieve chat ID.');
+      .then((response) => {
+        if (!response.ok) {
+          console.error('Failed to send current chat messages to backend:', response.statusText);
         }
       })
-      .catch(error => console.error('Error creating a new chat:', error));
-  } else {
-    console.log('No current chat messages to save. Starting a fresh chat.');
+      .catch((error) => {
+        console.error('Error sending current chat messages to backend:', error);
+      });
+
+    // Add current chat messages to chat history
+    chatHistory.push([...currentChatMessages]); // Store a copy of the current messages
+
+    // Update chat history UI
+    addChatHistCardToUI(chatHistory.length - 1);
+
+    // Clear current chat messages
+    currentChatMessages = [];
   }
 
-  // Clear UI for a new conversation
+  // Clear chat container for a new conversation
   const chatContainer = document.getElementById('chat-container');
   chatContainer.innerHTML = '';
-
-  // Prevent default action
   event.preventDefault();
 });
 
-
 document.getElementById('send-button').addEventListener('click', function () {
+  console.log("send button clicked")
   const messageInput = document.getElementById('user-message');
   const userMessage = messageInput.value.trim();
 
-  if (userMessage) {
-    const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('access_token'); // Retrieve the token from localStorage
 
+  if (userMessage && token) {
     // Add the user message to the current chat UI
-    addMessageToUI(userMessage, true);
-    currentChatMessages.push({ content: userMessage, isUser: true });
+    addMessageToUI(userMessage, true); // Display user message immediately
+    currentChatMessages.push({ content: userMessage, isUser: true }); // Save message to current chat
+    messageInput.value = ''; // Clear input field
 
-    if (currentChatId) {
-      // Send the message to the backend if a chat ID exists
-      fetch('/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          query: userMessage,
-          current_chat_id: currentChatId, // Ensure correct backend ID is used
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.response) {
-            // Display the assistant's response
-            addMessageToUI(data.response, false);
-            currentChatMessages.push({ content: data.response, isUser: false });
+    // Send message to the backend to save and get a response
+    fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ query: userMessage }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.response) {
+          // Display the assistant's response
+          addMessageToUI(data.response, false); // Add response to UI
+          currentChatMessages.push({ content: data.response, isUser: false }); // Save response to chat
 
-            // Update chatHistory with the new messages
-            const chatIndex = chatHistory.findIndex(chat => chat.chat_id === currentChatId);
-            if (chatIndex !== -1) {
-              chatHistory[chatIndex].messages = [...currentChatMessages];
-            }
+          // If this is a new chat, update the chat history sidebar
+          if (currentChatMessages.length === 1) {
+            chatHistory.push([...currentChatMessages]); // Save the full conversation
+            addChatHistCardToUI(chatHistory.length - 1); // Add to the sidebar
+            currentChatMessages = []; // Clear current chat messages
           }
-        })
-        .catch(error => console.error('Error sending message:', error));
-    } else {
-      // Warn and keep messages on the frontend if no chat ID exists
-      console.warn(
-        "No active chat in the backend. Messages are being temporarily stored in currentChatMessages."
-      );
-    }
-
-    // Clear the input field
-    messageInput.value = '';
+        } else {
+          console.error('Error:', data.message);
+        }
+      })
+      .catch(error => console.error('Error:', error));
   }
 });
 
@@ -978,25 +958,19 @@ function addMessageToUI(content, isUser = true) {
   chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to the bottom
 }
 
-document.getElementById('chat-history-container').addEventListener('click', function (event) {
+document.getElementById('chat-history-container').addEventListener('click', function(event) {
+  // Check if the clicked element is a button with the `username` class
+  console.log("event target: ",event.target,"   clicked")
   if (event.target && event.target.classList.contains('username')) {
-    const chatIndex = parseInt(event.target.getAttribute('data-chat-id'), 10);
-    const selectedChat = chatHistory[chatIndex];
+    // Get the chat ID from the button's `data-chat-id` attribute
+    const chatId = event.target.getAttribute('data-chat-id');
 
-    if (selectedChat) {
-      currentChatId = selectedChat.chat_id; // Set currentChatId to the backend ID
-      console.log(`currentChatId updated to: ${currentChatId}`);
-
-      // Load messages for the selected chat
-      loadChatFromHistory(chatIndex);
-
-      // Sync currentChatMessages with the selected chat
-      currentChatMessages = [...selectedChat.messages];
-      console.log("currentChatMessages updated:", currentChatMessages);
+    if (chatId !== null) {
+      console.log(`Event delegation: Loading chat history for Chat ${parseInt(chatId) + 1}`);
+      loadChatFromHistory(parseInt(chatId));
     }
   }
 });
-
 
 function loadChatFromHistory(chatIndex) {
   console.log(`Loading chat history for Chat ${chatIndex + 1}`);
