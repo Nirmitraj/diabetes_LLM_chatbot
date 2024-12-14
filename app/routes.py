@@ -281,21 +281,16 @@ def chat():
     # Handle "new-chat" event
     if data.get('new_chat', False):
         current_app.logger.info("Frontend requested a new chat.")
-
-        # Collect the messages from the current conversation
-        messages = data.get('messages', [])
-        chat_content = "\n".join(
-            [f"{'User' if msg['isUser'] else 'Assistant'}: {msg['content']}" for msg in messages]
-        )
-
+        user_query = data.get('query')
+        
         if user_id:
-            # Create a new chat row in the database with the collected messages
+            # Create a new empty chat row in the database
             new_chat = ChatHistory(
                 user_id=user_id,
-                title=str(get_user_query_title(messages[0]['content'])),
-                last_message=messages[-1]['content'] if messages else "",
+                title=str(get_user_query_title(user_query)),
+                last_message=user_query,
                 role='user',
-                content=chat_content,  # Add all current messages
+                content=f"User: {user_query}",
                 timestamp=datetime.utcnow(),
             )
             db.session.add(new_chat)
@@ -306,14 +301,52 @@ def chat():
             session['current_chat_id'] = current_chat_id
 
             current_app.logger.info(
-                "New chat created with ID: %s and content:\n%s", current_chat_id, chat_content
+                "New chat created with ID: %s", current_chat_id
             )
-        return jsonify({'message': 'New chat created'}), 201
+
+        # Generate the AI response
+        chat_history = session.get('chat_history', [])
+        chat_history.append({'role': 'user', 'content': user_query})
+
+        chat_history_entry = ChatHistory.query.filter_by(id=current_chat_id).first()
+        response = get_user_query_response(user_query, chat_history)
+        if response:
+            # Append AI response to the chat
+            if user_id and current_chat_id:
+                if chat_history_entry:
+                    chat_history_entry.content += f"\nAssistant: {response}"
+                    chat_history_entry.last_message = response
+                    chat_history_entry.timestamp = datetime.utcnow()
+                    db.session.commit()
+                    current_app.logger.info("AI response added to chat ID %s", current_chat_id)
+
+            # Update session chat history
+            chat_history.append({'role': 'assistant', 'content': response})
+            session['chat_history'] = chat_history
+
+        current_chat_record = ChatHistory.query.filter_by(id=current_chat_id).first()
+        current_chat_record_messages = [
+                {'content': line.split(": ", 1)[1], 'isUser': line.startswith("User")}
+                for line in current_chat_record.content.split("\n")
+                if ": " in line
+            ]
+        # Prepare the chat history
+        chat_history = [{
+            'id': new_chat.id,
+            'title': new_chat.title,
+            'messages': current_chat_record_messages,
+            'timestamp': new_chat.timestamp
+        }]
+
+        return jsonify({'chat_history': chat_history}), 200
 
     # Handle a user query
     if 'query' in data:
         user_query = data['query']
         current_app.logger.info("Processing user query: %s", user_query)
+        if data.get('chatID'):
+            current_chat_id = data['chatID']
+            session['current_chat_id'] = data['chatID']
 
         # Append the user's query to the current chat
         if user_id and current_chat_id:
@@ -321,6 +354,7 @@ def chat():
             if chat_history_entry:
                 chat_history_entry.content += f"\nUser: {user_query}"
                 chat_history_entry.last_message = user_query
+                chat_history_entry.timestamp = datetime.utcnow()
                 db.session.commit()
                 current_app.logger.info("User query added to chat ID %s", current_chat_id)
             else:
@@ -337,6 +371,7 @@ def chat():
                 if chat_history_entry:
                     chat_history_entry.content += f"\nAssistant: {response}"
                     chat_history_entry.last_message = response
+                    chat_history_entry.timestamp = datetime.utcnow()
                     db.session.commit()
                     current_app.logger.info("AI response added to chat ID %s", current_chat_id)
 
